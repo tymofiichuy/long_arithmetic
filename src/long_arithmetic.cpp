@@ -2,39 +2,67 @@
 #include<intrin.h>
 
 using namespace std;
-uint64_t base = 1<<64;
+//uint64_t base = 1<<64;
 
 long_int::long_int(){
-    this->digits = new uint64_t[32];
+    this->digits = new digit[32];
     for(int i = 0; i < 32; i++){
-        this->digits[i] = 0;
+        this->digits[i].value = 0;
     }
+}
+
+void long_int::reset(){
+    for(int i = 0; i < 32; i++){
+        this->digits[i].value = 0;
+    } 
 }
 
 long_int::~long_int(){
     delete[] digits;
 }
 
+//use subtraction instead?
+bool long_int::operator==(long_int& in){
+    for(int i = 0; i < 32; i++){
+        if(this->digits[i].value != in.digits[i].value){
+            return false;
+        }
+    }
+    return true;
+}
+
+digit long_int::operator[](int i){
+    return this->digits[i];
+}
+
+//can be optimized (if needed) by reducing tmp size to 64 bits and using flag to capture overflow
 unsigned char long_add(long_int& in1, long_int& in2, unsigned char carry_bit = 0, long_int& out){
     for(int i = 0; i < 32; i++){
-        carry_bit = _addcarry_u64(carry_bit, in1.digits[i], in2.digits[i], &out.digits[i]);
+        carry_bit = _addcarry_u64(carry_bit, in1.digits[i].value, in2.digits[i].value, &out.digits[i].value);
     }
     return carry_bit;
 }
-
-//problem: uint is always positive
+//can be optimized (if needed) by reducing tmp size to 64 bits and using flag to capture overflow
 unsigned char long_sub(long_int& in1, long_int& in2, unsigned char borrow_bit = 0, long_int& out){
-    uint64_t temp;
     for(int i = 0; i < 32; i++){
-        temp = in1.digits[i] - in2.digits[i] - borrow_bit;
-        if(temp >= 0){
-            out.digits[i] = temp;
-            borrow_bit = 0;
-        }
-        else{
-            out.digits[i] = temp + base;
-            borrow_bit = 1;
-        }
-    }
+        borrow_bit = _subborrow_u64(borrow_bit, in1.digits[i].value, in2.digits[i].value, &out.digits[i].value);
+    }    
     return borrow_bit;
+}
+
+void long_multiply_by_one_digit(long_int& long_in, digit digit_in, long_int& out){
+    out.reset();
+    long_int carry;
+    digit* temp;
+
+    for(int i = 0; i < 32; i++){
+        temp = digit_in.digit_mult(long_in[i]);
+        out[i] = temp[0];
+        if (i != 31){
+            carry[i+1] = temp[1];
+            long_add(out, carry, 0, out);
+            carry[i+1] = 0;
+        }
+        delete[] temp;
+    }
 }
