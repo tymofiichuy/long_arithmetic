@@ -14,8 +14,8 @@ void digit::operator<<(int i){
 
 digit* digit::digit_split(){
     digit* split = new digit[2];
-    split[0] = digit(value>>32);
-    split[1] = digit(value&0xFFFFFFFF);
+    split[1] = digit(value>>32);
+    split[0] = digit(value&0xFFFFFFFF);
 
     return split;
 }
@@ -29,8 +29,8 @@ digit* digit::digit_mult(digit in){
     digit mid = digit(temp_x[0].value*temp_y[1].value + temp_x[1].value*temp_y[0].value);
     digit* mid_split = mid.digit_split();
 
-    res[0] = digit(temp_x[1].value*temp_y[1].value + mid_split[1].value);
-    res[1] = digit(temp_x[0].value*temp_y[0].value + mid_split[0].value);
+    res[0] = digit(temp_x[0].value*temp_y[0].value + mid_split[0].value);
+    res[1] = digit(temp_x[1].value*temp_y[1].value + mid_split[1].value);
 
     delete[] temp_x;
     delete[] temp_y;

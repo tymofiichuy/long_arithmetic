@@ -31,28 +31,27 @@ bool long_int::operator==(long_int& in){
     return true;
 }
 
-digit long_int::operator[](int i){
+digit& long_int::operator[](int i){
     return this->digits[i];
 }
 
 //can be optimized (if needed) by reducing tmp size to 64 bits and using flag to capture overflow
 unsigned char long_add(long_int& in1, long_int& in2, unsigned char carry_bit = 0, long_int& out){
     for(int i = 0; i < 32; i++){
-        carry_bit = _addcarry_u64(carry_bit, in1.digits[i].value, in2.digits[i].value, &out.digits[i].value);
+        carry_bit = _addcarry_u64(carry_bit, in1[i].value, in2[i].value, &out[i].value);
     }
     return carry_bit;
 }
 //can be optimized (if needed) by reducing tmp size to 64 bits and using flag to capture overflow
 unsigned char long_sub(long_int& in1, long_int& in2, unsigned char borrow_bit = 0, long_int& out){
     for(int i = 0; i < 32; i++){
-        borrow_bit = _subborrow_u64(borrow_bit, in1.digits[i].value, in2.digits[i].value, &out.digits[i].value);
+        borrow_bit = _subborrow_u64(borrow_bit, in1[i].value, in2[i].value, &out[i].value);
     }    
     return borrow_bit;
 }
 
-void long_multiply_by_one_digit(long_int& long_in, digit digit_in, long_int& out){
+void long_multiply_by_one_digit(long_int& long_in, digit digit_in, long_int& carry, long_int& out){
     out.reset();
-    long_int carry;
     digit* temp;
 
     for(int i = 0; i < 32; i++){
@@ -60,9 +59,12 @@ void long_multiply_by_one_digit(long_int& long_in, digit digit_in, long_int& out
         out[i] = temp[0];
         if (i != 31){
             carry[i+1] = temp[1];
-            long_add(out, carry, 0, out);
-            carry[i+1] = 0;
         }
         delete[] temp;
     }
+    long_add(out, carry, 0, out);
+}
+
+void long_sub_multiply(long_int& in1, long_int& in2, long_int& out){
+    
 }
