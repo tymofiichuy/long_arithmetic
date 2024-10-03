@@ -53,7 +53,6 @@ void long_int::long_upper_sub_shift(int shift){
         throw invalid_argument("Attempt to shift an invalid number of bits");
     }
     else{
-        //uint64_t mask = ~0ULL<<64-shift;
         uint64_t carry_in = 0;
         uint64_t carry_out = 0;
         for(int i = 0; i<32; i++){
@@ -69,4 +68,40 @@ void long_int::operator<<(int shift){
     int sub_shift = shift%64;
     this->long_upper_super_shift(super_shift);
     this->long_upper_sub_shift(sub_shift);
+}
+
+void long_int::long_lower_super_shift(int shift){
+    if(shift>32 || shift<0){
+        throw invalid_argument("Attempt to shift an invalid number of digits");
+    }
+    else{
+        for(int i = 0; i < 32-shift; i++){
+            digits[i].value = digits[i+shift].value;
+        }  
+        for(int i = 31; i >= 32-shift; i--){
+            digits[i].value = 0; 
+        } 
+    }
+}
+
+void long_int::long_lower_sub_shift(int shift){
+    if(shift>64 || shift<0){
+        throw invalid_argument("Attempt to shift an invalid number of bits");
+    }
+    else{
+        uint64_t carry_in = 0;
+        uint64_t carry_out = 0;
+        for(int i = 31; i >= 0; i--){
+            carry_out = this->digits[i].value<<(64-shift);
+            this->digits[i].value = (this->digits[i].value>>shift)|carry_in;
+            carry_in = carry_out;
+        }
+    }
+}
+
+void long_int::operator>>(int shift){
+    int super_shift = shift/64;
+    int sub_shift = shift%64;
+    this->long_lower_super_shift(super_shift);
+    this->long_lower_sub_shift(sub_shift);
 }

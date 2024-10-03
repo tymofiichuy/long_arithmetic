@@ -10,9 +10,11 @@ public:
     //void split(long_int* out, int iter);
     //shift whithin digits
     void long_upper_sub_shift(int);
+    void long_lower_sub_shift(int);
     //digit shift
     void long_upper_super_shift(int);
-    // void operator>>(int);
+    void long_lower_super_shift(int);
+    void operator>>(int);
     void operator<<(int);
     bool operator==(long_int&);
     digit& operator[](int);
