@@ -7,21 +7,25 @@ public:
     digit* digits;
     int size = 32;
 
-    //void split(long_int* out, int iter);
     //shift whithin digits
     void long_upper_sub_shift(int);
     void long_lower_sub_shift(int);
     //digit shift
     void long_upper_super_shift(int);
     void long_lower_super_shift(int);
+
     void operator>>(int);
     void operator<<(int);
     bool operator==(long_int&);
+    long_int& operator=(long_int&);
     digit& operator[](int);
 
-    void reset();
+    //void split(long_int* out, int iter);
 
-    long_int();
+    void reset();
+    int bit_length();
+
+    long_int(uint64_t init_value = 0);
     ~long_int();
 };
 
@@ -40,9 +44,9 @@ public:
 };
 
 //next functions return is a last carry/borrow bit
-unsigned char long_add(long_int&, long_int&, long_int&, unsigned char);
+unsigned char long_add(long_int& in1, long_int& in2, long_int& out, unsigned char carry_bit);
 //unsigned char long_add(long_int& in1, long_int& in2, unsigned char carry_bit = 0, long_int& out);
-unsigned char long_sub(long_int&, long_int&, long_int&, unsigned char);
+unsigned char long_sub(long_int& in1, long_int& in2, long_int& out, unsigned char borrow_bit);
 //unsigned char long_sub(long_int& in1, long_int& in2, unsigned char borrow_bit = 0, long_int& out);
 
 //return carry from long_add?
@@ -52,4 +56,9 @@ void long_sub_multiply(long_int& in1, long_int& in2, long_int& out);
 //karatsuba multiplication
 //void long_super_multiply(long_int& in1, long_int& in2, long_int& out, int iter);
 //optimized combined method
-void long_multiply(long_int& in1, long_int& in2, long_int& out);
+//void long_multiply(long_int& in1, long_int& in2, long_int& out);
+
+void long_divide(long_int& in1, long_int& in2, long_int& remainder, int& quarter);
+
+//window method, 4 bit
+void long_power(long_int& in1, long_int& in2, long_int& out);

@@ -3,10 +3,13 @@
 
 using namespace std;
 
-long_int::long_int(){
+long_int::long_int(uint64_t init_value = 0){
     this->digits = new digit[32];
     for(int i = 0; i < 32; i++){
         this->digits[i].value = 0;
+    }
+    if(!init_value){
+        this->digits[0].value = init_value;
     }
 }
 
@@ -104,4 +107,16 @@ void long_int::operator>>(int shift){
     int sub_shift = shift%64;
     this->long_lower_super_shift(super_shift);
     this->long_lower_sub_shift(sub_shift);
+}
+
+long_int& long_int::operator=(long_int& in){
+    if (*this == in){
+        return *this;
+    }
+    else{
+        for(int i = 0; i < 32; i++){
+            this->digits[i].value = in[i].value;
+        }
+        return *this;
+    }
 }
