@@ -72,6 +72,7 @@ void long_divide(long_int& in1, long_int& in2, long_int& rem, int& quart){
         throw invalid_argument("Divison by zero");
     }
     else{
+        rem.reset();    
         int in_len = in2.bit_length();
         int rem_len;
         long_int sub_temp;
@@ -94,6 +95,7 @@ void long_divide(long_int& in1, long_int& in2, long_int& rem, int& quart){
 
 //not finished!
 void long_power(long_int& in1, long_int& in2, long_int& out){
+    out.reset();
     long_int powers[16];
     powers[0] = long_int(1);
     for(int i = 1; i < 16; i++){
@@ -101,14 +103,17 @@ void long_power(long_int& in1, long_int& in2, long_int& out){
     }
 
     long_int res = long_int(1);
+    int index;
     //can be improved!
     long_int temp = res;
     for(int i = 256; i >= 0; i--){
-        for(int j = 0; j < 4; j++){
+        for(int j = 0; j < 16; j++){
             long_sub_multiply(temp, temp, res);
             temp = res;
         }
-        //long_sub_multiply(temp, powers[???])
+        index = in2[31].value>>60;
+        long_sub_multiply(temp, powers[index], res);
+        in2<<4;
     }
 }
 
