@@ -48,9 +48,9 @@ public:
 };
 
 //next functions return is a last carry/borrow bit
-unsigned char long_add(long_int& in1, long_int& in2, long_int& out, unsigned char carry_bit);
+unsigned char long_add(long_int& in1, long_int& in2, long_int& out, unsigned char carry_bit = 0);
 //unsigned char long_add(long_int& in1, long_int& in2, unsigned char carry_bit = 0, long_int& out);
-unsigned char long_sub(long_int& in1, long_int& in2, long_int& out, unsigned char borrow_bit);
+unsigned char long_sub(long_int& in1, long_int& in2, long_int& out, unsigned char borrow_bit = 0);
 //unsigned char long_sub(long_int& in1, long_int& in2, unsigned char borrow_bit = 0, long_int& out);
 
 //return carry from long_add?

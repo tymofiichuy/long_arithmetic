@@ -8,7 +8,7 @@ long_int::long_int(uint64_t init_value){
     for(int i = 0; i < 32; i++){
         this->digits[i].value = 0;
     }
-    if(!init_value){
+    if(init_value != 0){
         this->digits[0].value = init_value;
     }
 }
@@ -42,8 +42,8 @@ void long_int::long_upper_super_shift(int shift){
         throw invalid_argument("Attempt to shift an invalid number of digits");
     }
     else{
-        for(int i = 0; i < 32-shift; i++){
-            digits[i+shift].value = digits[i].value;
+        for(int i = 31; i >= 0; i--){
+            digits[i].value = digits[i-shift].value;
         }  
         for(int i = 0; i < shift; i++){
             digits[i].value = 0; 

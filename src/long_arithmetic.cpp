@@ -7,14 +7,14 @@ using namespace std;
 //uint64_t base = 1<<64;
 
 //can be optimized (if needed) by reducing tmp size to 64 bits and using flag to capture overflow
-unsigned char long_add(long_int& in1, long_int& in2, long_int& out, unsigned char carry_bit = 0){
+unsigned char long_add(long_int& in1, long_int& in2, long_int& out, unsigned char carry_bit){
     for(int i = 0; i < 32; i++){
         carry_bit = _addcarry_u64(carry_bit, in1[i].value, in2[i].value, &out[i].value);
     }
     return carry_bit;
 }
 //can be optimized (if needed) by reducing tmp size to 64 bits and using flag to capture overflow
-unsigned char long_sub(long_int& in1, long_int& in2, long_int& out, unsigned char borrow_bit = 0){
+unsigned char long_sub(long_int& in1, long_int& in2, long_int& out, unsigned char borrow_bit){
     for(int i = 0; i < 32; i++){
         borrow_bit = _subborrow_u64(borrow_bit, in1[i].value, in2[i].value, &out[i].value);
     }    
@@ -125,7 +125,7 @@ void long_int::read_long_int(string in){
     if(in.substr(0,2) == "0x"){
         in.erase(0,2);
     }
-    int len = in.length();
+    int len = static_cast<int>(in.length());
     int start = len-16;
     int quart = len/16;
     int rem = len%16;
@@ -142,15 +142,21 @@ void long_int::read_long_int(string in){
 
 void long_int::print_int(){
     cout << "0x";
-    for(int i = 31; i >= 0; i--){
-        while(!this->digits[i].value){
-            i--;
+    int i = 31;
+    while(this->digits[i].value == 0 && i >= 0){
+        i--;
+    }
+    if(i == -1){
+        cout << 0;
+    }
+    for(i; i >= 0; i--){
+        if(this->digits[i].value != 0){
+            cout << hex << this->digits[i].value;            
         }
-        cout << hex << this->digits[i].value;
-    }
-    if(!this->digits[0].value){
-        cout << "0";
-    }
+        else{
+            cout << "0000000000000000";
+        }
+    }        
     cout << "\n";
 }
 
