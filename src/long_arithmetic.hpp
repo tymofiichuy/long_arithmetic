@@ -1,6 +1,21 @@
 #pragma once
 
 #include<stdint.h>
+#include<string>
+
+class digit{
+public:
+    uint64_t value;
+
+    void operator>>(int);
+    void operator<<(int);
+    //dynamic allocated memory!
+    digit* digit_split();
+    //dynamic allocated memory!
+    digit* digit_mult(digit);
+
+    digit(uint64_t = 0);
+};
 
 class long_int{
 public:
@@ -13,6 +28,9 @@ public:
     //digit shift
     void long_upper_super_shift(int);
     void long_lower_super_shift(int);
+
+    void read_long_int(std::string);
+    void print_int();
 
     void operator>>(int);
     void operator<<(int);
@@ -27,20 +45,6 @@ public:
 
     long_int(uint64_t init_value = 0);
     ~long_int();
-};
-
-class digit{
-public:
-    uint64_t value;
-
-    void operator>>(int);
-    void operator<<(int);
-    //dynamic allocated memory!
-    digit* digit_split();
-    //dynamic allocated memory!
-    digit* digit_mult(digit);
-
-    digit(uint64_t = 0);
 };
 
 //next functions return is a last carry/borrow bit

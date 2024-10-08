@@ -1,6 +1,7 @@
 #include "long_arithmetic.hpp"
 #include<intrin.h>
-#include <iostream>
+#include<iostream>
+#include<string>
 
 using namespace std;
 //uint64_t base = 1<<64;
@@ -35,6 +36,7 @@ void long_multiply_by_one_digit(long_int& long_in, digit digit_in, long_int& car
     long_add(out, carry, out);
 }
 
+//store double lenght!
 void long_sub_multiply(long_int& in1, long_int& in2, long_int& out){
     out.reset();
     long_int temp;
@@ -94,6 +96,7 @@ void long_divide(long_int& in1, long_int& in2, long_int& rem, int& quart){
 }
 
 //not finished!
+//can be skiped
 void long_power(long_int& in1, long_int& in2, long_int& out){
     out.reset();
     long_int powers[16];
@@ -115,6 +118,40 @@ void long_power(long_int& in1, long_int& in2, long_int& out){
         long_sub_multiply(temp, powers[index], res);
         in2<<4;
     }
+}
+
+void long_int::read_long_int(string in){
+    this->reset();
+    if(in.substr(0,2) == "0x"){
+        in.erase(0,2);
+    }
+    int len = in.length();
+    int start = len-16;
+    int quart = len/16;
+    int rem = len%16;
+
+    for(int i = 0; i < quart; i++){
+        this->digits[i].value = stoull(in.substr(start, 16), nullptr, 16);
+        start -= 16;
+    }
+
+    if(rem){
+        this->digits[quart].value = stoull(in.substr(0, rem), nullptr, 16);
+    }
+}
+
+void long_int::print_int(){
+    cout << "0x";
+    for(int i = 31; i >= 0; i--){
+        while(!this->digits[i].value){
+            i--;
+        }
+        cout << hex << this->digits[i].value;
+    }
+    if(!this->digits[0].value){
+        cout << "0";
+    }
+    cout << "\n";
 }
 
 // void long_int::split(long_int* out, int iter){

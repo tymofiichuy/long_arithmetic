@@ -3,7 +3,7 @@
 
 using namespace std;
 
-long_int::long_int(uint64_t init_value = 0){
+long_int::long_int(uint64_t init_value){
     this->digits = new digit[32];
     for(int i = 0; i < 32; i++){
         this->digits[i].value = 0;
