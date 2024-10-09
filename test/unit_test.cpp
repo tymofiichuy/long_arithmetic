@@ -163,6 +163,24 @@ TEST(BasicFuncTest, BitLengthTest){
   EXPECT_TRUE(x.bit_length() == 176);
 }
 
+TEST(BasicFuncTest, SetBitTest){
+  long_int x(1);
+  long_int y;
+  x<<68;
+  y.set_bit(1, 68);
+
+  EXPECT_TRUE(x == y);
+}
+
+TEST(BasicFuncTest, SetLastDigitBitTest){
+  long_int x(1);
+  long_int y;
+  x<<64;
+  y.set_bit(1, 64);
+
+  EXPECT_TRUE(x == y);
+}
+
 TEST(CoreFuncTest, AddTest){
   long_int x;
   long_int y;
@@ -189,6 +207,45 @@ TEST(CoreFuncTest, SubTest){
   long_sub(x, y, dif);
 
   EXPECT_TRUE(exp_dif == dif);
+}
+
+TEST(CoreFuncTest, DivTest){
+  long_int x;
+  long_int y;
+  long_int quart;
+  long_int exp_quart;
+  long_int rem;
+  x.read_long_int("0x20736a58fe16964aa40fbafbcb63175b370f70823dd4212");
+  y.read_long_int("0x28a895cfd0200f098e2ef");
+  exp_quart.read_long_int("0xcc5251a41ae5fc1717a0b6b139");
+
+  long_divide(x, y, rem, quart);
+
+  EXPECT_TRUE(quart == exp_quart);
+}
+
+TEST(CoreFuncTest, LowerEdgeDivTest){
+  long_int x;
+  long_int y(1);
+  long_int quart;
+  long_int rem;
+  x.read_long_int("0x20736a58fe16964aa40fbafbcb63175b370f70823dd4212");
+
+  long_divide(x, y, rem, quart);
+
+  EXPECT_TRUE(quart == x);
+}
+
+TEST(CoreFuncTest, UpperEdgeDivTest){
+  long_int x;
+  long_int y(1);
+  long_int quart;
+  long_int rem;
+  x.read_long_int("0x20736a58fe16964aa40fbafbcb63175b370f70823dd4212");
+
+  long_divide(x, x, rem, quart);
+
+  EXPECT_TRUE(quart == y);
 }
 
 int main(int argc, char **argv) {

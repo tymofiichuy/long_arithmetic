@@ -76,23 +76,22 @@ void long_divide(long_int& in1, long_int& in2, long_int& rem, long_int& quart){
     }
     else{
         rem.reset();
-        quart.reset();   
+        quart.reset();
         int in_len = in2.bit_length();
         int rem_len;
         long_int sub_temp;
         long_int temp;
         rem = in1;
-        //quart = 0;
         while(long_sub(rem, in2, sub_temp) == 0){
-            rem_len = rem.bit_length();
             temp = in2;
+            rem_len = rem.bit_length();
             temp<<(rem_len - in_len);
-            if(long_sub(rem, temp, sub_temp)){
+            if(long_sub(rem, temp, sub_temp) == 1){
                 rem_len--;
                 temp>>(1);
             }
             long_sub(rem, temp, rem);
-            //quart += 1<<(rem_len - in_len);
+            quart.set_bit(1, rem_len - in_len);
         }        
     }
 }
@@ -109,7 +108,6 @@ void long_power(long_int& in1, long_int& in2, long_int& out){
 
     long_int res = long_int(1);
     int index;
-    //can be improved!
     long_int temp = res;
     for(int i = 256; i >= 0; i--){
         for(int j = 0; j < 16; j++){

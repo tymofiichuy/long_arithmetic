@@ -29,6 +29,8 @@ public:
     void long_upper_super_shift(int);
     void long_lower_super_shift(int);
 
+    void set_bit(int value, int position);
+
     void read_long_int(std::string);
     void print_int();
 

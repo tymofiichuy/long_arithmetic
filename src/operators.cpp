@@ -123,3 +123,25 @@ long_int& long_int::operator=(long_int& in){
         return *this;
     }
 }
+
+void long_int::set_bit(int value, int position){
+    if(value != 0 && value != 1){
+        throw invalid_argument("Incorrect bit value");
+    }
+    else if(position > 2048 || position < 0){
+        throw out_of_range("long_int lenght is 2048 bit");
+    }
+    else{
+        int digit = position/64;
+        int bit = position%64;
+        switch (value){
+        case 1:
+            this->digits[digit].value|=1ULL<<bit;
+            break;
+        
+        case 0:
+            this->digits[digit].value&=~(1ULL<<bit);        
+            break;
+        }     
+    }    
+}
