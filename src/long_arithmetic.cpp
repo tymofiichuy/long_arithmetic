@@ -69,19 +69,21 @@ int long_int::bit_length(){
     return i*64 + j;
 }
 
-void long_divide(long_int& in1, long_int& in2, long_int& rem, int& quart){
+//probem here!
+void long_divide(long_int& in1, long_int& in2, long_int& rem, long_int& quart){
     if(!in2.bit_length()){
         throw invalid_argument("Divison by zero");
     }
     else{
-        rem.reset();    
+        rem.reset();
+        quart.reset();   
         int in_len = in2.bit_length();
         int rem_len;
         long_int sub_temp;
         long_int temp;
         rem = in1;
-        quart = 0;
-        while(!long_sub(rem, in2, sub_temp)){
+        //quart = 0;
+        while(long_sub(rem, in2, sub_temp) == 0){
             rem_len = rem.bit_length();
             temp = in2;
             temp<<(rem_len - in_len);
@@ -90,7 +92,7 @@ void long_divide(long_int& in1, long_int& in2, long_int& rem, int& quart){
                 temp>>(1);
             }
             long_sub(rem, temp, rem);
-            quart += 1<<(rem_len - in_len);
+            //quart += 1<<(rem_len - in_len);
         }        
     }
 }

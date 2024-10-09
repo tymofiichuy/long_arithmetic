@@ -55,6 +55,9 @@ void long_int::long_upper_sub_shift(int shift){
     if(shift>64 || shift<0){
         throw invalid_argument("Attempt to shift an invalid number of bits");
     }
+    else if(shift == 0){
+        return;
+    }
     else{
         uint64_t carry_in = 0;
         uint64_t carry_out = 0;

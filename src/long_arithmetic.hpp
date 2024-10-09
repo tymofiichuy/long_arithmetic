@@ -62,7 +62,7 @@ void long_sub_multiply(long_int& in1, long_int& in2, long_int& out);
 //optimized combined method
 //void long_multiply(long_int& in1, long_int& in2, long_int& out);
 
-void long_divide(long_int& in1, long_int& in2, long_int& remainder, int& quarter);
+void long_divide(long_int& in1, long_int& in2, long_int& remainder, long_int& quarter);
 
 //window method, 4 bit
 void long_power(long_int& in1, long_int& in2, long_int& out);

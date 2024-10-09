@@ -132,30 +132,35 @@ TEST(BasicFuncTest, LowerSuperShiftTest){
 
 TEST(BasicFuncTest, UpperShiftTest){
   string input = "0x28a895cfd0200f098e2effaf19391c4a837ff1";
-  string shifted_input = "0x14544ae7e8100784d7577ff7ec9c8fa5c7bfffd78c9c8e2541bff880000000000000000";
+  string shifted_input = "0x28a895cfd0200f098e2effaf19391c4a837ff100000000000000000";
   long_int x;
   long_int y;
   x.read_long_int(input);
   y.read_long_int(shifted_input);
 
-  x<<67;
-  x.print_int();
-  y.print_int();
+  x<<68;
 
   EXPECT_TRUE(x == y);
 }
 
 TEST(BasicFuncTest, LowerShiftTest){
   string input = "0x28a895cfd0200f098e2effaf19391c4a837ff1";
-  string shifted_input = "0x51512b9fa0401e131c5df";
+  string shifted_input = "0x28a895cfd0200f098e2ef";
   long_int x;
   long_int y;
   x.read_long_int(input);
   y.read_long_int(shifted_input);
 
-  x>>67;
+  x>>68;
 
   EXPECT_TRUE(x == y);
+}
+
+TEST(BasicFuncTest, BitLengthTest){
+  long_int x(1);
+  x<<175;
+
+  EXPECT_TRUE(x.bit_length() == 176);
 }
 
 TEST(CoreFuncTest, AddTest){
