@@ -40,7 +40,7 @@ public:
     long_int& operator=(long_int&);
     digit& operator[](int);
 
-    //void split(long_int* out, int iter);
+    void split(long_int& out1, long_int& out2);
 
     void reset();
     int bit_length();
@@ -56,13 +56,9 @@ unsigned char long_sub(long_int& in1, long_int& in2, long_int& out, unsigned cha
 //unsigned char long_sub(long_int& in1, long_int& in2, unsigned char borrow_bit = 0, long_int& out);
 
 //return carry from long_add?
-void long_multiply_by_one_digit(long_int&, digit, long_int&, long_int&);
-//digit multiplication
-void long_sub_multiply(long_int& in1, long_int& in2, long_int& out);
-//karatsuba multiplication
-//void long_super_multiply(long_int& in1, long_int& in2, long_int& out, int iter);
-//optimized combined method
-//void long_multiply(long_int& in1, long_int& in2, long_int& out);
+void long_multiply_by_one_digit(long_int& long_in, digit digit_in, long_int& carry, long_int& out);
+void long_half_multiply(long_int& in1, long_int& in2, long_int& out);
+void long_multiply(long_int& in1, long_int& in2, long_int& out1, long_int& out2);
 
 void long_divide(long_int& in1, long_int& in2, long_int& remainder, long_int& quarter);
 

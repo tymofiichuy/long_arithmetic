@@ -6,14 +6,14 @@
 using namespace std;
 //uint64_t base = 1<<64;
 
-//can be optimized (if needed) by reducing tmp size to 64 bits and using flag to capture overflow
+//can be optimized by reducing tmp size to 64 bits and using flag to capture overflow
 unsigned char long_add(long_int& in1, long_int& in2, long_int& out, unsigned char carry_bit){
     for(int i = 0; i < 32; i++){
         carry_bit = _addcarry_u64(carry_bit, in1[i].value, in2[i].value, &out[i].value);
     }
     return carry_bit;
 }
-//can be optimized (if needed) by reducing tmp size to 64 bits and using flag to capture overflow
+//can be optimized by reducing tmp size to 64 bits and using flag to capture overflow
 unsigned char long_sub(long_int& in1, long_int& in2, long_int& out, unsigned char borrow_bit){
     for(int i = 0; i < 32; i++){
         borrow_bit = _subborrow_u64(borrow_bit, in1[i].value, in2[i].value, &out[i].value);
@@ -27,6 +27,9 @@ void long_multiply_by_one_digit(long_int& long_in, digit digit_in, long_int& car
 
     for(int i = 0; i < 32; i++){
         temp = digit_in.digit_mult(long_in[i]);
+        if(long_in[i].value == 0){
+            temp[1].value = 0;
+        }
         out[i] = temp[0];
         if (i != 31){
             carry[i+1] = temp[1];
@@ -36,17 +39,58 @@ void long_multiply_by_one_digit(long_int& long_in, digit digit_in, long_int& car
     long_add(out, carry, out);
 }
 
-//store double lenght!
-void long_sub_multiply(long_int& in1, long_int& in2, long_int& out){
+
+void long_int::split(long_int& out1, long_int& out2){
+    out1.reset();
+    out2.reset();
+
+    for(int i = 0; i < 16; i++){
+        out1[i] = this->digits[i];
+    }
+
+    for(int i = 16; i < 32; i++){
+        out2[i-16] = this->digits[i];
+    }
+}
+
+void long_half_multiply(long_int& in1, long_int& in2, long_int& out){
     out.reset();
-    long_int temp;
-    long_int carry;
-    for(int i = 0; i < 32; i++){
-        carry.reset();
+    long_int temp, carry;
+    unsigned char sub_carry = 0;
+    
+    for(int i = 0; i < 16; i++){
+        //carry.reset();
         long_multiply_by_one_digit(in1, in2[i], carry, temp);
         temp.long_upper_super_shift(i);
-        long_add(out, temp, out);
+        sub_carry = long_add(out, temp, out, sub_carry);
     }
+}
+
+//problem here!
+void long_multiply(long_int& in1, long_int& in2, long_int& out1, long_int& out2){
+    out1.reset();
+    out2.reset();
+
+    long_int mid_split1, mid_split2, split1_1, split1_2, split2_1, split2_2, mid, temp1, temp2;
+    unsigned char sub_carry = 0;
+    
+    in1.split(split1_1, split1_2);
+    in2.split(split2_1, split2_2);
+
+    long_half_multiply(split1_1, split2_2, temp1);
+    long_half_multiply(split1_2, split2_1, temp2);
+    sub_carry = long_add(temp1, temp2, mid);
+    mid.split(mid_split1, mid_split2);
+    if(sub_carry == 1){
+        mid_split2[16].value = 1;
+    }
+    sub_carry = 0;
+    mid_split1.long_upper_super_shift(16);
+
+    long_half_multiply(split1_1, split2_1, temp1);
+    long_half_multiply(split1_2, split2_2, temp2);
+    sub_carry = long_add(temp1, mid_split1, out1, sub_carry);
+    sub_carry = long_add(temp2, mid_split2, out2, sub_carry);
 }
 
 int long_int::bit_length(){
@@ -69,7 +113,6 @@ int long_int::bit_length(){
     return i*64 + j;
 }
 
-//probem here!
 void long_divide(long_int& in1, long_int& in2, long_int& rem, long_int& quart){
     if(!in2.bit_length()){
         throw invalid_argument("Divison by zero");
@@ -93,30 +136,6 @@ void long_divide(long_int& in1, long_int& in2, long_int& rem, long_int& quart){
             long_sub(rem, temp, rem);
             quart.set_bit(1, rem_len - in_len);
         }        
-    }
-}
-
-//not finished!
-//can be skiped
-void long_power(long_int& in1, long_int& in2, long_int& out){
-    out.reset();
-    long_int powers[16];
-    powers[0] = long_int(1);
-    for(int i = 1; i < 16; i++){
-        long_sub_multiply(powers[i-1], in1, powers[i]);
-    }
-
-    long_int res = long_int(1);
-    int index;
-    long_int temp = res;
-    for(int i = 256; i >= 0; i--){
-        for(int j = 0; j < 16; j++){
-            long_sub_multiply(temp, temp, res);
-            temp = res;
-        }
-        index = in2[31].value>>60;
-        long_sub_multiply(temp, powers[index], res);
-        in2<<4;
     }
 }
 
@@ -160,18 +179,27 @@ void long_int::print_int(){
     cout << "\n";
 }
 
-// void long_int::split(long_int* out, int iter){
-//     out[0].reset();
-//     out[1].reset();
-//     int upper = 32<<iter;
-//     int lower = 16<<iter;
-
-//     for(int i = 0; i < lower; i++){
-//         out[0][i] = this->digits[i];
+// not finished!
+// can be skiped
+// void long_power(long_int& in1, long_int& in2, long_int& out){
+//     out.reset();
+//     long_int powers[16];
+//     powers[0] = long_int(1);
+//     for(int i = 1; i < 16; i++){
+//         long_sub_multiply(powers[i-1], in1, powers[i]);
 //     }
 
-//     for(int i = lower; i < upper; i++){
-//         out[1][i-lower] = this->digits[i];
+//     long_int res = long_int(1);
+//     int index;
+//     long_int temp = res;
+//     for(int i = 256; i >= 0; i--){
+//         for(int j = 0; j < 16; j++){
+//             long_sub_multiply(temp, temp, res);
+//             temp = res;
+//         }
+//         index = in2[31].value>>60;
+//         long_sub_multiply(temp, powers[index], res);
+//         in2<<4;
 //     }
 // }
 
@@ -181,12 +209,4 @@ void long_int::print_int(){
 //     in1.split(split_1, iter);
 //     in2.split(split_2, iter);
 
-// }
-
-// void long_int::split(long_int* out){
-//     for(int i = 0; i < 8; i++){
-//         for (int j = 0; j < 4; j++){
-//             out[i][j] = this->digits[i*4+j];
-//         }
-//     }
 // }
