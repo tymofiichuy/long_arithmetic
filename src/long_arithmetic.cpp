@@ -2,26 +2,27 @@
 #include<intrin.h>
 #include<iostream>
 #include<string>
+#include<iomanip>
 
 using namespace std;
 //uint64_t base = 1<<64;
 
 //can be optimized by reducing tmp size to 64 bits and using flag to capture overflow
-unsigned char long_add(long_int& in1, long_int& in2, long_int& out, unsigned char carry_bit){
+unsigned char long_arithmetic::long_add(long_int& in1, long_int& in2, long_int& out, unsigned char carry_bit){
     for(int i = 0; i < 32; i++){
         carry_bit = _addcarry_u64(carry_bit, in1[i].value, in2[i].value, &out[i].value);
     }
     return carry_bit;
 }
 //can be optimized by reducing tmp size to 64 bits and using flag to capture overflow
-unsigned char long_sub(long_int& in1, long_int& in2, long_int& out, unsigned char borrow_bit){
+unsigned char long_arithmetic::long_sub(long_int& in1, long_int& in2, long_int& out, unsigned char borrow_bit){
     for(int i = 0; i < 32; i++){
         borrow_bit = _subborrow_u64(borrow_bit, in1[i].value, in2[i].value, &out[i].value);
     }    
     return borrow_bit;
 }
 
-void long_multiply_by_one_digit(long_int& long_in, digit digit_in, long_int& carry, long_int& out){
+void long_arithmetic::long_multiply_by_one_digit(long_int& long_in, digit digit_in, long_int& carry, long_int& out){
     out.reset();
     digit* temp;
 
@@ -53,7 +54,7 @@ void long_int::split(long_int& out1, long_int& out2){
     }
 }
 
-void long_half_multiply(long_int& in1, long_int& in2, long_int& out){
+void long_arithmetic::long_half_multiply(long_int& in1, long_int& in2, long_int& out){
     out.reset();
     long_int temp, carry;
     unsigned char sub_carry = 0;
@@ -66,8 +67,7 @@ void long_half_multiply(long_int& in1, long_int& in2, long_int& out){
     }
 }
 
-//problem here!
-void long_multiply(long_int& in1, long_int& in2, long_int& out1, long_int& out2){
+void long_arithmetic::long_multiply(long_int& in1, long_int& in2, long_int& out1, long_int& out2){
     out1.reset();
     out2.reset();
 
@@ -113,7 +113,7 @@ int long_int::bit_length(){
     return i*64 + j;
 }
 
-void long_divide(long_int& in1, long_int& in2, long_int& rem, long_int& quart){
+void long_arithmetic::long_divide(long_int& in1, long_int& in2, long_int& rem, long_int& quart){
     if(!in2.bit_length()){
         throw invalid_argument("Divison by zero");
     }
@@ -168,14 +168,13 @@ void long_int::print_int(){
     if(i == -1){
         cout << 0;
     }
-    for(i; i >= 0; i--){
-        if(this->digits[i].value != 0){
-            cout << hex << this->digits[i].value;            
-        }
-        else{
-            cout << "0000000000000000";
-        }
-    }        
+    else{
+        cout << hex << this->digits[i].value;
+        i--;
+        for(i; i >= 0; i--){
+            cout << setfill('0') << setw(16) << hex << this->digits[i].value;            
+        }   
+    }       
     cout << "\n";
 }
 

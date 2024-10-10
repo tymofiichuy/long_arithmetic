@@ -11,6 +11,7 @@
         "optional": "cpp",
         "system_error": "cpp",
         "type_traits": "cpp",
-        "xtr1common": "cpp"
+        "xtr1common": "cpp",
+        "fstream": "cpp"
     }
 }
