@@ -3,9 +3,10 @@
 
 using namespace std;
 
-long_int::long_int(uint64_t init_value){
-    this->digits = new digit[32];
-    for(int i = 0; i < 32; i++){
+long_int::long_int(uint64_t init_value, uint8_t init_size){
+    size = init_size;
+    this->digits = new digit[size];
+    for(int i = 0; i < size; i++){
         this->digits[i].value = 0;
     }
     if(init_value != 0){
@@ -14,7 +15,7 @@ long_int::long_int(uint64_t init_value){
 }
 
 void long_int::reset(){
-    for(int i = 0; i < 32; i++){
+    for(int i = 0; i < size; i++){
         this->digits[i].value = 0;
     } 
 }
@@ -25,7 +26,7 @@ long_int::~long_int(){
 
 //use subtraction instead?
 bool long_int::operator==(long_int& in){
-    for(int i = 0; i < 32; i++){
+    for(int i = 0; i < size; i++){
         if(this->digits[i].value != in.digits[i].value){
             return false;
         }
@@ -38,11 +39,11 @@ digit& long_int::operator[](int i){
 }
 
 void long_int::long_upper_super_shift(int shift){
-    if(shift>32 || shift<0){
+    if(shift>size || shift<0){
         throw invalid_argument("Attempt to shift an invalid number of digits");
     }
     else{
-        for(int i = 31; i >= 0; i--){
+        for(int i = size-1; i >= 0; i--){
             digits[i].value = digits[i-shift].value;
         }  
         for(int i = 0; i < shift; i++){
@@ -61,7 +62,7 @@ void long_int::long_upper_sub_shift(int shift){
     else{
         uint64_t carry_in = 0;
         uint64_t carry_out = 0;
-        for(int i = 0; i<32; i++){
+        for(int i = 0; i<size; i++){
             carry_out = this->digits[i].value>>(64-shift);
             this->digits[i].value = (this->digits[i].value<<shift)|carry_in;
             carry_in = carry_out;
@@ -77,14 +78,14 @@ void long_int::operator<<(int shift){
 }
 
 void long_int::long_lower_super_shift(int shift){
-    if(shift>32 || shift<0){
+    if(shift>size || shift<0){
         throw invalid_argument("Attempt to shift an invalid number of digits");
     }
     else{
-        for(int i = 0; i < 32-shift; i++){
+        for(int i = 0; i < size-shift; i++){
             digits[i].value = digits[i+shift].value;
         }  
-        for(int i = 31; i >= 32-shift; i--){
+        for(int i = size-1; i >= size-shift; i--){
             digits[i].value = 0; 
         } 
     }
@@ -97,7 +98,7 @@ void long_int::long_lower_sub_shift(int shift){
     else{
         uint64_t carry_in = 0;
         uint64_t carry_out = 0;
-        for(int i = 31; i >= 0; i--){
+        for(int i = size-1; i >= 0; i--){
             carry_out = this->digits[i].value<<(64-shift);
             this->digits[i].value = (this->digits[i].value>>shift)|carry_in;
             carry_in = carry_out;
@@ -117,7 +118,7 @@ long_int& long_int::operator=(long_int& in){
         return *this;
     }
     else{
-        for(int i = 0; i < 32; i++){
+        for(int i = 0; i < size; i++){
             this->digits[i].value = in[i].value;
         }
         return *this;

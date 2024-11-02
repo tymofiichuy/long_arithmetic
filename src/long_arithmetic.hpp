@@ -22,7 +22,8 @@ public:
 class long_int{
 private:
     digit* digits;
-    int size = 32;
+    //should make adaptive size!
+    int size;
 public:
     //shift whithin digits
     void long_upper_sub_shift(int);
@@ -47,7 +48,7 @@ public:
     void reset();
     int bit_length();
 
-    long_int(uint64_t init_value = 0);
+    long_int(uint64_t init_value = 0, uint8_t init_size = 32);
     ~long_int();
 
     friend class long_arithmetic;
@@ -69,4 +70,8 @@ public:
 
     //window method, 4 bit
     //static void long_power(long_int& in1, long_int& in2, long_int& out);
+};
+
+class modular_arithmetic{
+
 };
