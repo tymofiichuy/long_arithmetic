@@ -12,6 +12,7 @@
         "system_error": "cpp",
         "type_traits": "cpp",
         "xtr1common": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "iomanip": "cpp"
     }
 }

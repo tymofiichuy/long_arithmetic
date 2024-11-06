@@ -9,7 +9,7 @@ using namespace std;
 
 //can be optimized by reducing tmp size to 64 bits and using flag to capture overflow
 unsigned char long_arithmetic::long_add(long_int& in1, long_int& in2, long_int& out, unsigned char carry_bit){
-    if(in1.size != in2.size && in1.size != out.size){
+    if(in1.size != in2.size || in1.size != out.size){
         throw invalid_argument("Numbers are incompatible");
     }
     else{
@@ -22,7 +22,7 @@ unsigned char long_arithmetic::long_add(long_int& in1, long_int& in2, long_int& 
 }
 //can be optimized by reducing tmp size to 64 bits and using flag to capture overflow
 unsigned char long_arithmetic::long_sub(long_int& in1, long_int& in2, long_int& out, unsigned char borrow_bit){
-    if(in1.size != in2.size && in1.size != out.size){
+    if(in1.size != in2.size || in1.size != out.size){
         throw invalid_argument("Numbers are incompatible");
     }
     else{
@@ -35,7 +35,7 @@ unsigned char long_arithmetic::long_sub(long_int& in1, long_int& in2, long_int& 
 }
 
 void long_arithmetic::long_multiply_by_one_digit(long_int& long_in, digit digit_in, long_int& carry, long_int& out){
-    if(long_in.size != out.size && long_in.size != carry.size){
+    if(long_in.size != out.size || long_in.size != carry.size){
         throw invalid_argument("Numbers are incompatible");        
     }
     else{
@@ -82,7 +82,7 @@ void long_int::split(long_int& out1, long_int& out2){
 }
 
 void long_arithmetic::long_half_multiply(long_int& in1, long_int& in2, long_int& out){
-    if(in1.size != in2.size && in1.size != out.size){
+    if(in1.size != in2.size || in1.size != out.size){
         throw invalid_argument("Numbers are incompatible");
     }
     else if(in1.size%2 != 0){
@@ -104,7 +104,8 @@ void long_arithmetic::long_half_multiply(long_int& in1, long_int& in2, long_int&
     }
 }
 
-void long_arithmetic::long_multiply(long_int& in1, long_int& in2, long_int& out1, long_int& out2){
+//void long_arithmetic::long_multiply(long_int& in1, long_int& in2, long_int& out1, long_int& out2){
+void long_arithmetic::long_multiply(long_int& in1, long_int& in2, long_int& out){
     //modify for adaptivec size!!!
     if(in1.size != in2.size){
         throw invalid_argument("Numbers are incompatible");
@@ -114,8 +115,7 @@ void long_arithmetic::long_multiply(long_int& in1, long_int& in2, long_int& out1
     }
     else{
         uint8_t temp = in2.size>>1;
-        out1.reset();
-        out2.reset();
+        long_int low(0, in1.size), high(0, in1.size);
 
         long_int mid_split1, mid_split2, split1_1, split1_2, split2_1, split2_2, mid, temp1, temp2;
         unsigned char sub_carry = 0;
@@ -135,8 +135,25 @@ void long_arithmetic::long_multiply(long_int& in1, long_int& in2, long_int& out1
 
         long_half_multiply(split1_1, split2_1, temp1);
         long_half_multiply(split1_2, split2_2, temp2);
-        sub_carry = long_add(temp1, mid_split1, out1, sub_carry);
-        sub_carry = long_add(temp2, mid_split2, out2, sub_carry);
+        sub_carry = long_add(temp1, mid_split1, low, sub_carry);
+        sub_carry = long_add(temp2, mid_split2, high, sub_carry);
+
+        if(high.bit_length() == 0){
+            out.resize_erase(in1.size);
+            out = move(low);
+        }
+        else{
+            out.resize_erase(2*in1.size);
+            int iter = 0;
+            while(iter < in1.size){
+                out[iter].value = low[iter].value;
+                iter++;
+            }
+            while(iter < 2*in1.size){
+                out[iter].value = high[iter-32].value;
+                iter++;
+            }
+        }
     }
 }
 
@@ -158,6 +175,10 @@ int long_int::bit_length(){
         j++;
     }
     return i*64 + j;
+}
+
+int long_int::get_size(){
+    return size;
 }
 
 void long_arithmetic::long_divide(long_int& in1, long_int& in2, long_int& rem, long_int& quart){
@@ -192,13 +213,13 @@ void long_int::read_long_int(string in){
         in.erase(0,2);
     }
     int len = static_cast<int>(in.length());
-    int start = len-(size/2);
-    int quart = len/(size/2);
-    int rem = len%(size/2);
+    int start = len-16;
+    int quart = len/16;
+    int rem = len%16;
 
     for(int i = 0; i < quart; i++){
-        this->digits[i].value = stoull(in.substr(start, size/2), nullptr, 16);
-        start -= size/2;
+        this->digits[i].value = stoull(in.substr(start, 16), nullptr, 16);
+        start -= 16;
     }
 
     if(rem){
@@ -219,7 +240,7 @@ void long_int::print_int(){
         cout << hex << this->digits[i].value;
         i--;
         for(i; i >= 0; i--){
-            cout << setfill('0') << setw(size/2) << hex << this->digits[i].value;            
+            cout << setfill('0') << setw(16) << hex << this->digits[i].value;            
         }   
     }       
     cout << "\n";

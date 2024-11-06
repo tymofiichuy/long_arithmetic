@@ -33,18 +33,19 @@ void handle(int option){
             cout << "\n";
             break;
         case 3:
-            cin >> sx;
-            x.read_long_int(sx);
-            cout << "\n";
-            cin >> sy;
-            y.read_long_int(sy);
+            // Rewrite for new multiplication!
+            // cin >> sx;
+            // x.read_long_int(sx);
+            // cout << "\n";
+            // cin >> sy;
+            // y.read_long_int(sy);
 
-            long_arithmetic::long_multiply(x, y, out1, out2);
-            cout << setfill('=') << setw(100) << "\n";            
-            out2.print_int();
-            cout << "\n";
-            out1.print_int();
-            cout << "\n";
+            // long_arithmetic::long_multiply(x, y, out1, out2);
+            // cout << setfill('=') << setw(100) << "\n";            
+            // out2.print_int();
+            // cout << "\n";
+            // out1.print_int();
+            // cout << "\n";
             break;
         case 4:
             cin >> sx;
