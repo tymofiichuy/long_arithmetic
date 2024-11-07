@@ -18,6 +18,6 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 
 add_executable(runUnitTests ${TEST_DIR}/unit_test.cpp 
-${SOURCE_DIR}/long_arithmetic.cpp ${SOURCE_DIR}/operators.cpp ${SOURCE_DIR}/digit.cpp)
+${SOURCE_DIR}/long_arithmetic.cpp ${SOURCE_DIR}/modular_arithmetic.cpp ${SOURCE_DIR}/operators.cpp ${SOURCE_DIR}/digit.cpp)
 target_link_libraries(runUnitTests gtest gtest_main)
 add_test(runUnitTests runUnitTests)

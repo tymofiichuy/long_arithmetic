@@ -83,7 +83,9 @@ public:
 };
 
 class modular_arithmetic{
+public:
     //calculate u/v coefficients?
     //return a bool value: 1 if numbers are coprime, 0 if not?
     static void steins_algorithm(long_int in1, long_int in2, long_int& out);
+    static void LCM(long_int& in1, long_int& in2, long_int& out);
 };

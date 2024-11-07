@@ -123,7 +123,7 @@ void long_int::operator>>(int shift){
 
 long_int& long_int::operator=(long_int& in){
     //check sizes!
-    if (*this == in){
+    if (this == &in){
         return *this;
     }
     else{
@@ -135,11 +135,13 @@ long_int& long_int::operator=(long_int& in){
 }
 
 long_int& long_int::operator=(long_int&& in){
-    if (*this == in){
+    if (this == &in){
         return *this;
     }
     else{
-        delete[] digits;
+        if(digits){
+            delete[] digits;            
+        }
         digits = in.digits;
         size = in.size;
         in.digits = nullptr;
@@ -154,9 +156,9 @@ void long_int::set_bit(int value, int position){
         throw invalid_argument("Incorrect bit value");
     }
     //shold change boundaries!
-    else if(position > 2048 || position < 0){
-        throw out_of_range("long_int lenght is 2048 bit");
-    }
+    // else if(position > 2048 || position < 0){
+    //     throw out_of_range("long_int lenght is 2048 bit");
+    // }
     else{
         int digit = position/64;
         int bit = position%64;
@@ -182,20 +184,27 @@ bool long_int::even(){
 }
 
 void long_int::resize_erase(int new_size){
-    delete[] digits;
-    digits = new digit[new_size];
-    size = new_size;
+    if(size != new_size){
+        delete[] digits;
+        digits = new digit[new_size];
+        size = new_size;        
+    }
+    else{
+        this->reset();
+    }
 }
 
 void long_int::resize(int new_size){
-    digit* temp = new digit[new_size];
-    int iter = 0;
-    while(iter < size && iter < new_size){
-        temp[iter].value = digits[iter].value;
-        iter++;
+    if(size != new_size){
+        digit* temp = new digit[new_size];
+        int iter = 0;
+        while(iter < size && iter < new_size){
+            temp[iter].value = digits[iter].value;
+            iter++;
+        }
+        
+        delete[] digits;
+        digits = temp;
+        size = new_size;        
     }
-    
-    delete[] digits;
-    digits = temp;
-    size = new_size;
 }

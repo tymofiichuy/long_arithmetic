@@ -182,27 +182,34 @@ int long_int::get_size(){
 }
 
 void long_arithmetic::long_divide(long_int& in1, long_int& in2, long_int& rem, long_int& quart){
-    if(!in2.bit_length()){
-        throw invalid_argument("Divison by zero");
+    if(in1.get_size() != in2.get_size()){
+        throw invalid_argument("Numbers are incompatible");
     }
     else{
-        rem.reset();
-        quart.reset();
-        int in_len = in2.bit_length();
-        int rem_len;
-        long_int sub_temp;
-        long_int temp;
-        rem = in1;
-        while(long_sub(rem, in2, sub_temp) == 0){
-            temp = in2;
-            rem_len = rem.bit_length();
-            temp<<(rem_len - in_len);
-            if(long_sub(rem, temp, sub_temp) == 1){
-                rem_len--;
-                temp>>(1);
-            }
-            long_sub(rem, temp, rem);
-            quart.set_bit(1, rem_len - in_len);
+        int size = in1.get_size();
+
+        if(!in2.bit_length()){
+            throw invalid_argument("Divison by zero");
+        }
+        else{
+            rem.resize_erase(size);
+            quart.resize_erase(size);
+            int in_len = in2.bit_length();
+            int rem_len;
+            long_int sub_temp(0, size);
+            long_int temp(0, size);
+            rem = in1;
+            while(long_sub(rem, in2, sub_temp) == 0){
+                temp = in2;
+                rem_len = rem.bit_length();
+                temp<<(rem_len - in_len);
+                if(long_sub(rem, temp, sub_temp) == 1){
+                    rem_len--;
+                    temp>>(1);
+                }
+                long_sub(rem, temp, rem);
+                quart.set_bit(1, rem_len - in_len);
+            }        
         }        
     }
 }
