@@ -32,7 +32,6 @@ long_int::~long_int(){
     delete[] digits;
 }
 
-//use subtraction instead?
 bool long_int::operator==(long_int& in){
     // if(size != in.size){
     //     return false;
@@ -142,6 +141,7 @@ long_int& long_int::operator=(long_int& in){
         return *this;
     }
     else{
+        this->resize_erase(in.size);
         for(int i = 0; i < size; i++){
             this->digits[i].value = in[i].value;
         }
@@ -220,5 +220,26 @@ void long_int::resize(int new_size){
         delete[] digits;
         digits = temp;
         size = new_size;        
+    }
+}
+
+void long_int::get_high(long_int& out, int part){
+    if(part > size){
+        throw invalid_argument("Part can't be larger then the number");
+    }
+    else{
+        int digit_size = digit_length(); 
+        out.resize_erase(part);
+        for(int i = 0; i < part; i++){
+            out[i].value = digits[digit_size-part+i].value;
+        }      
+    }
+}
+
+//!!!
+void long_int::rewrite_high(long_int& in){
+    int digit_size = digit_length();
+    for(int i = 0; i < in.size; i++){
+        digits[digit_size-in.size+i].value = in[i].value;
     }
 }

@@ -69,71 +69,25 @@ void modular_arithmetic::mu_calc(long_int& in, long_int& modulo, long_int& mu){
     }
 }
 
-void modular_arithmetic::barrett_reduction(long_int& in, long_int& modulo, long_int& mu, long_int& rem){
-    long_int quart(in);
+void modular_arithmetic::barrett_reduction(long_int in, long_int& modulo, long_int& mu, long_int& rem){
     int len = modulo.digit_length();
+
+    long_int temp(0, 2*len);
+    while(in.digit_length() > 2*modulo.digit_length()){
+        in.get_high(temp, 2*len);
+        modular_arithmetic::barrett_reduction(temp, modulo, mu, temp);
+        in.rewrite_high(temp);
+    }
+
+    long_int quart(in);
     quart.long_lower_super_shift(len-1);
     long_arithmetic::long_multiply(quart, mu, quart);
     quart.long_lower_super_shift(len+1);
     long_arithmetic::long_multiply(quart, modulo, quart);
     long_arithmetic::long_sub(in, quart, rem);
-
     while(!long_arithmetic::long_sub(rem, modulo, quart)){
         long_arithmetic::long_sub(rem, modulo, rem);
     }
 
-    rem.resize(len);
+    rem.resize(2*len);
 }
-
-
-
-// void modular_arithmetic::mu_calc(long_int& in, long_int& modulo, long_int& mu){
-//     int in_len, mod_len, shift;
-//     long_int temp(0, in.get_size());
-//     if(long_arithmetic::long_sub(in, modulo, temp)){
-//         mu.reset();
-//     }
-//     else{
-//         mu.resize_erase(2*in.size + 1);
-//         in_len = in.bit_length();
-//         mod_len = modulo.bit_length();
-//         if(2*mod_len < in_len){
-//             shift = in_len;
-//         }
-//         else{
-//             shift = 2*mod_len;
-//         }
-//
-//         mu.set_bit(1, 2*shift+1);
-//         long_arithmetic::long_divide(mu, modulo, temp, mu);        
-//     }
-// }
-
-// void modular_arithmetic::barrett_reduction(long_int& in, long_int& modulo, long_int& mu, long_int& rem){
-//     if(mu.bit_length() == 0){
-//         rem = in;     
-//     }
-
-//     int in_len, mod_len, shift;
-//     long_int temp(0, in.get_size()), quart(in);
-//     in_len = in.bit_length();
-//     mod_len = modulo.bit_length();
-//     if(long_arithmetic::long_sub(in, modulo, temp)){
-//         rem = in;
-//         quart.reset();
-//     }
-//     else{
-//         if(2*mod_len < in_len){
-//             shift = in_len;
-//         }
-//         else{
-//             shift = 2*mod_len;
-//         }
-
-//         quart = in;
-//         quart>>(mod_len-1);
-//         long_arithmetic::long_multiply(quart, mu, quart);
-//         quart>>(mod_len-1);
-//         long_arithmetic::long_multiply(quart, modulo, temp);
-//     }
-// }

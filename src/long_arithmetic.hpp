@@ -25,22 +25,29 @@ private:
     //should make adaptive size!
     int size;
 public:
+//Shifts and bit/digit operations
     //shift whithin digits
     void long_upper_sub_shift(int);
     void long_lower_sub_shift(int);
     //digit shift
     void long_upper_super_shift(int);
     void long_lower_super_shift(int);
-
     void set_bit(int value, int position);
     bool even();
+    void reset();
+    int digit_length();
+    int bit_length();
+    int get_size();  
 
+//IO
     void read_long_int(std::string);
     void print_int();
 
+//Adaptive size
     void resize(int new_size);
     void resize_erase(int new_size);
 
+//Operators
     void operator>>(int);
     void operator<<(int);
     bool operator==(long_int&);
@@ -49,13 +56,14 @@ public:
     long_int& operator=(long_int&&);
     digit& operator[](int);
 
+//Integer split
     void split(long_int& out1, long_int& out2);
 
-    void reset();
-    int digit_length();
-    int bit_length();
-    int get_size();
+//Partition
+    void get_high(long_int& out, int part);
+    void rewrite_high(long_int& in);
 
+//Constructors/Destructor
     //make size a power of 2?
     long_int(uint64_t init_value = 0, uint8_t init_size = 32);
     long_int(long_int&);
@@ -90,5 +98,5 @@ public:
     static void steins_algorithm(long_int in1, long_int in2, long_int& out);
     static void lcm(long_int& in1, long_int& in2, long_int& out);
     static void mu_calc(long_int& in, long_int& modulo, long_int& mu);
-    static void barrett_reduction(long_int& in, long_int& modulo, long_int& mu, long_int& rem);
+    static void barrett_reduction(long_int in, long_int& modulo, long_int& mu, long_int& rem);
 };
