@@ -22,7 +22,6 @@ public:
 class long_int{
 private:
     digit* digits;
-    //should make adaptive size!
     int size;
 public:
 //Shifts and bit/digit operations
@@ -46,6 +45,8 @@ public:
 //Adaptive size
     void resize(int new_size);
     void resize_erase(int new_size);
+    //Reduce size to minimal without loosign data
+    void reduce_size();
 
 //Operators
     void operator>>(int);
@@ -64,7 +65,6 @@ public:
     void rewrite_high(long_int& in);
 
 //Constructors/Destructor
-    //make size a power of 2?
     long_int(uint64_t init_value = 0, uint8_t init_size = 32);
     long_int(long_int&);
     ~long_int();

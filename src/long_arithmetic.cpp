@@ -18,11 +18,7 @@ void long_arithmetic::adjust_size(long_int& in1, long_int& in2){
     }
 }
 
-//can be optimized by reducing tmp size to 64 bits and using flag to capture overflow
 unsigned char long_arithmetic::long_add(long_int in1, long_int in2, long_int& out, unsigned char carry_bit){
-    // if(in1.size != in2.size || in1.size != out.size){
-    //     throw invalid_argument("Numbers are incompatible");
-    // }
     adjust_size(in1, in2);
     out.resize_erase(in1.size);
 
@@ -32,11 +28,8 @@ unsigned char long_arithmetic::long_add(long_int in1, long_int in2, long_int& ou
     }
     return carry_bit;
 }
-//can be optimized by reducing tmp size to 64 bits and using flag to capture overflow
+
 unsigned char long_arithmetic::long_sub(long_int in1, long_int in2, long_int& out, unsigned char borrow_bit){
-    // if(in1.size != in2.size || in1.size != out.size){
-    //     throw invalid_argument("Numbers are incompatible");
-    // }
     adjust_size(in1, in2);
     out.resize_erase(in1.size);
     uint8_t size = in1.size;
@@ -94,7 +87,6 @@ void long_int::split(long_int& out1, long_int& out2){
 }
 
 void long_arithmetic::long_half_multiply(long_int& in1, long_int& in2, long_int& out){
-    //remove later!
     if(in1.size != in2.size || in1.size != out.size){
         throw invalid_argument("Numbers are incompatible");
     }
@@ -117,23 +109,19 @@ void long_arithmetic::long_half_multiply(long_int& in1, long_int& in2, long_int&
     }
 }
 
-//void long_arithmetic::long_multiply(long_int& in1, long_int& in2, long_int& out1, long_int& out2){
 void long_arithmetic::long_multiply(long_int in1, long_int in2, long_int& out){
-    //modify for adaptive size!!!
     if(in1.size >= in2.size){
         if(in1.size%2 != 0){
             in1.resize(in1.size + 1);
-        //throw invalid_argument("Size should be even");
         }
     }
     else{
         if(in2.size%2 != 0){
             in2.resize(in2.size + 1);
-        //throw invalid_argument("Size should be even");
         }  
     }
     adjust_size(in1, in2);
-    out.resize_erase(in1.size);
+
     uint8_t temp = in2.size>>1;
     long_int low(0, in1.size), high(0, in1.size);
 

@@ -33,20 +33,6 @@ long_int::~long_int(){
 }
 
 bool long_int::operator==(long_int& in){
-    // if(size != in.size){
-    //     return false;
-    // }
-    // int inner_size;
-    // if(size == in.size){
-
-    // }
-    // for(int i = 0; i < size; i++){
-    //     if(this->digits[i].value != in.digits[i].value){
-    //         return false;
-    //     }
-    // }
-    // return true;
-
     long_int temp;
     if(!long_arithmetic::long_sub(*this, in, temp) && !long_arithmetic::long_sub(in, *this, temp)){
         return true;
@@ -170,10 +156,9 @@ void long_int::set_bit(int value, int position){
     if(value != 0 && value != 1){
         throw invalid_argument("Incorrect bit value");
     }
-    //shold change boundaries!
-    // else if(position > 2048 || position < 0){
-    //     throw out_of_range("long_int lenght is 2048 bit");
-    // }
+    else if(position >= size*64 || position < 0){
+        throw out_of_range("Out of boundaries");
+    }
     else{
         int digit = position/64;
         int bit = position%64;
@@ -223,6 +208,10 @@ void long_int::resize(int new_size){
     }
 }
 
+void long_int::reduce_size(){
+    resize(digit_length());
+}
+
 void long_int::get_high(long_int& out, int part){
     if(part > size){
         throw invalid_argument("Part can't be larger then the number");
@@ -236,7 +225,6 @@ void long_int::get_high(long_int& out, int part){
     }
 }
 
-//!!!
 void long_int::rewrite_high(long_int& in){
     int digit_size = digit_length();
     for(int i = 0; i < in.size; i++){

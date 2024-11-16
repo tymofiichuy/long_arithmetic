@@ -63,31 +63,34 @@ void modular_arithmetic::mu_calc(long_int& in, long_int& modulo, long_int& mu){
     else{
         mu.resize_erase(2*(len+1));
         mu.set_bit(1, 128*len);
-        //mu.set_bit(1,0);
-        //mu.long_upper_super_shift(2*len);
         long_arithmetic::long_divide(mu, modulo, temp, mu);
     }
 }
 
 void modular_arithmetic::barrett_reduction(long_int in, long_int& modulo, long_int& mu, long_int& rem){
-    int len = modulo.digit_length();
-
-    long_int temp(0, 2*len);
-    while(in.digit_length() > 2*modulo.digit_length()){
-        in.get_high(temp, 2*len);
-        modular_arithmetic::barrett_reduction(temp, modulo, mu, temp);
-        in.rewrite_high(temp);
+    if(mu.bit_length() == 0){
+        rem = in;
     }
+    else{
+        int len = modulo.digit_length();
 
-    long_int quart(in);
-    quart.long_lower_super_shift(len-1);
-    long_arithmetic::long_multiply(quart, mu, quart);
-    quart.long_lower_super_shift(len+1);
-    long_arithmetic::long_multiply(quart, modulo, quart);
-    long_arithmetic::long_sub(in, quart, rem);
-    while(!long_arithmetic::long_sub(rem, modulo, quart)){
-        long_arithmetic::long_sub(rem, modulo, rem);
+        long_int temp(0, 2*len);
+        while(in.digit_length() > 2*modulo.digit_length()){
+            in.get_high(temp, 2*len);
+            modular_arithmetic::barrett_reduction(temp, modulo, mu, temp);
+            in.rewrite_high(temp);
+        }
+
+        long_int quart(in);
+        quart.long_lower_super_shift(len-1);
+        long_arithmetic::long_multiply(quart, mu, quart);
+        quart.long_lower_super_shift(len+1);
+        long_arithmetic::long_multiply(quart, modulo, quart);
+        long_arithmetic::long_sub(in, quart, rem);
+        while(!long_arithmetic::long_sub(rem, modulo, quart)){
+            long_arithmetic::long_sub(rem, modulo, rem);
+        }
+
+        rem.resize(2*len);        
     }
-
-    rem.resize(2*len);
 }
