@@ -80,7 +80,6 @@ public:
     static unsigned char long_add(long_int in1, long_int in2, long_int& out, unsigned char carry_bit = 0);
     static unsigned char long_sub(long_int in1, long_int in2, long_int& out, unsigned char borrow_bit = 0);
 
-    //needs adjustment!
     static void long_multiply_by_one_digit(long_int& long_in, digit digit_in, long_int& carry, long_int& out);
     static void long_half_multiply(long_int& in1, long_int& in2, long_int& out);
     static void long_multiply(long_int in1, long_int in2, long_int& out);
@@ -97,6 +96,12 @@ public:
     //return a bool value: 1 if numbers are coprime, 0 if not?
     static void steins_algorithm(long_int in1, long_int in2, long_int& out);
     static void lcm(long_int& in1, long_int& in2, long_int& out);
-    static void mu_calc(long_int& in, long_int& modulo, long_int& mu);
+    static void mu_calc(long_int& modulo, long_int& mu);
     static void barrett_reduction(long_int in, long_int& modulo, long_int& mu, long_int& rem);
+
+    static void long_mod_add(long_int& in1, long_int& in2, long_int& modulo, long_int& mu, long_int& out, unsigned char carry_bit = 0);
+    static void long_mod_sub(long_int& in1, long_int& in2, long_int& modulo, long_int& mu,long_int& out, unsigned char borrow_bit = 0);
+    static void long_mod_multiply(long_int& in1, long_int& in2, long_int& modulo, long_int& mu, long_int& out);
+    static void long_mod_square(long_int& in, long_int& modulo, long_int& mu, long_int& out);
+    static void long_mod_power(long_int& in, long_int& power, long_int& modulo, long_int& mu, long_int& out);
 };

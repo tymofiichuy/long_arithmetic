@@ -273,27 +273,3 @@ void long_int::print_int(){
     }       
     cout << "\n";
 }
-
-// not finished!
-// can be skiped
-// void long_power(long_int& in1, long_int& in2, long_int& out){
-//     out.reset();
-//     long_int powers[size/2];
-//     powers[0] = long_int(1);
-//     for(int i = 1; i < size/2; i++){
-//         long_sub_multiply(powers[i-1], in1, powers[i]);
-//     }
-
-//     long_int res = long_int(1);
-//     int index;
-//     long_int temp = res;
-//     for(int i = 256; i >= 0; i--){
-//         for(int j = 0; j < size/2; j++){
-//             long_sub_multiply(temp, temp, res);
-//             temp = res;
-//         }
-//         index = in2[size-1].value>>60;
-//         long_sub_multiply(temp, powers[index], res);
-//         in2<<4;
-//     }
-// }

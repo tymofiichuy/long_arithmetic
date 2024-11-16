@@ -54,30 +54,26 @@ void modular_arithmetic::lcm(long_int& in1, long_int& in2, long_int& out){
     long_arithmetic::long_divide(prod, gcd, rem, out);
 }
 
-void modular_arithmetic::mu_calc(long_int& in, long_int& modulo, long_int& mu){
+void modular_arithmetic::mu_calc(long_int& modulo, long_int& mu){
     int len = modulo.digit_length();
     long_int temp;
-    if(long_arithmetic::long_sub(in, modulo, temp)){
-        mu.reset();
-    }
-    else{
-        mu.resize_erase(2*(len+1));
-        mu.set_bit(1, 128*len);
-        long_arithmetic::long_divide(mu, modulo, temp, mu);
-    }
+    mu.resize_erase(2*(len+1));
+    mu.set_bit(1, 128*len);
+    long_arithmetic::long_divide(mu, modulo, temp, mu);
 }
 
 void modular_arithmetic::barrett_reduction(long_int in, long_int& modulo, long_int& mu, long_int& rem){
-    if(mu.bit_length() == 0){
+    long_int temp;
+    if(long_arithmetic::long_sub(in, modulo, temp)){
         rem = in;
     }
     else{
         int len = modulo.digit_length();
 
-        long_int temp(0, 2*len);
+        temp.resize_erase(2*len);
         while(in.digit_length() > 2*modulo.digit_length()){
             in.get_high(temp, 2*len);
-            modular_arithmetic::barrett_reduction(temp, modulo, mu, temp);
+            barrett_reduction(temp, modulo, mu, temp);
             in.rewrite_high(temp);
         }
 
@@ -94,3 +90,61 @@ void modular_arithmetic::barrett_reduction(long_int in, long_int& modulo, long_i
         rem.resize(2*len);        
     }
 }
+
+void modular_arithmetic::long_mod_add(long_int& in1, long_int& in2, long_int& modulo, long_int& mu, long_int& out, unsigned char carry_bit){
+    unsigned char last_carry = long_arithmetic::long_add(in1, in2, out, carry_bit);
+    if(last_carry){
+        out.resize(out.size+2);
+        out.set_bit(1, 64*(out.size-2));
+    }
+
+    barrett_reduction(out, modulo, mu, out);
+}
+
+void modular_arithmetic::long_mod_sub(long_int& in1, long_int& in2, long_int& modulo, long_int& mu,long_int& out, unsigned char borrow_bit){
+    unsigned char last_borrow = long_arithmetic::long_sub(in1, in2, out, borrow_bit);
+    if(!last_borrow){
+        barrett_reduction(out, modulo, mu, out);
+    }
+    else{
+        long_arithmetic::long_sub(in2, in1, out, borrow_bit);
+        barrett_reduction(out, modulo, mu, out);
+        long_arithmetic::long_sub(modulo, out, out);
+    }
+}
+
+void modular_arithmetic::long_mod_multiply(long_int& in1, long_int& in2, long_int& modulo, long_int& mu, long_int& out){
+    long_arithmetic::long_multiply(in1, in2, out);
+    barrett_reduction(out, modulo, mu, out);
+}
+
+void modular_arithmetic::long_mod_square(long_int& in, long_int& modulo, long_int& mu, long_int& out){
+    long_mod_multiply(in, in, modulo, mu, out);
+}
+
+void modular_arithmetic::long_mod_power(long_int& in, long_int& power, long_int& modulo, long_int& mu, long_int& out){
+
+}
+
+// not finished!
+// void long_power(long_int& in1, long_int& in2, long_int& out){
+//     out.reset();
+//     long_int powers[size/2];
+//     powers[0] = long_int(1);
+//     for(int i = 1; i < size/2; i++){
+//         long_sub_multiply(powers[i-1], in1, powers[i]);
+//     }
+
+//     long_int res = long_int(1);
+//     int index;
+//     long_int temp = res;
+//     for(int i = 256; i >= 0; i--){
+//         for(int j = 0; j < size/2; j++){
+//             long_sub_multiply(temp, temp, res);
+//             temp = res;
+//         }
+//         index = in2[size-1].value>>60;
+//         long_sub_multiply(temp, powers[index], res);
+//         in2<<4;
+//     }
+// }
