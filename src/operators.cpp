@@ -173,6 +173,17 @@ void long_int::set_bit(int value, int position){
     }    
 }
 
+bool long_int::get_bit(int position){
+    if(position >= size*64 || position < 0){
+        throw out_of_range("Out of boundaries");
+    }
+    else{
+        uint64_t digit = digits[position/64].value;
+        int bit = position%64;
+        return (digit<<(63-bit))>>63;        
+    }
+}
+
 bool long_int::even(){
     if(digits[0].value<<63 == 0){
         return true;

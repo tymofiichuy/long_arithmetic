@@ -32,6 +32,7 @@ public:
     void long_upper_super_shift(int);
     void long_lower_super_shift(int);
     void set_bit(int value, int position);
+    bool get_bit(int position);
     bool even();
     void reset();
     int digit_length();
@@ -103,5 +104,5 @@ public:
     static void long_mod_sub(long_int& in1, long_int& in2, long_int& modulo, long_int& mu,long_int& out, unsigned char borrow_bit = 0);
     static void long_mod_multiply(long_int& in1, long_int& in2, long_int& modulo, long_int& mu, long_int& out);
     static void long_mod_square(long_int& in, long_int& modulo, long_int& mu, long_int& out);
-    static void long_mod_power(long_int& in, long_int& power, long_int& modulo, long_int& mu, long_int& out);
+    static void long_mod_power(long_int in, long_int& power, long_int& modulo, long_int& out);
 };

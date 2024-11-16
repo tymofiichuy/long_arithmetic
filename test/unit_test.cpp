@@ -164,6 +164,19 @@ TEST(BasicFuncTest, SetBitTest){
   EXPECT_TRUE(x == y);
 }
 
+TEST(BasicFuncTest, GetBitTest){
+  long_int x(0, 2);
+  bool bit_64, bit_65, bit_66, bit_67;
+  x.read_long_int("0xffff4ffffffffffffffff");
+
+  bit_64 = x.get_bit(64);
+  bit_65 = x.get_bit(65);
+  bit_66 = x.get_bit(66);
+  bit_67 = x.get_bit(67);
+
+  EXPECT_TRUE(!bit_64 && !bit_65 && bit_66 && !bit_67);
+}
+
 TEST(BasicFuncTest, SetLastDigitBitTest){
   long_int x(1);
   long_int y;
@@ -505,6 +518,30 @@ TEST(ModFuncTest, Equalty2Test){
   }
 
   EXPECT_TRUE(out1 == out2);
+}
+
+TEST(ModFuncTest, ModShortPowerTest){
+  long_int x, y, mod, mu, out, exp_out;
+  x.read_long_int("0x28a895cfd0200f098e2effaf19391c4a837ff199610c9bd4241b1a226effbc0ba1e4c9f81cd703a4212c02f96767adbc1e336b9d2cc5eccc98bd202bddc8fa5011f2df252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7ebf20736a58fe16964aa40fbafbcb63175b370f70823dd4212ff42bfbc778478b757e15cb8f9eb1bc33ae07f2366f07c6bade3f8cb1745bd0622073c835d9ed17b9897730a542ab333ec3f25e91a36787064d30eb8c5a396d5345f580b8104249d9d90cf6a85a2ce2e09a2ef2df9308cc0c9f57ff7727e6b0f56294dafff4c3b994");
+  y.read_long_int("0xff");
+  mod.read_long_int("0xf252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7ebf20736a58fe16964aa40fbafbcb63175b370f70823dd4212ff42bfbc778478b757e15cb8f9eb1bc33ae07f2366f07c6bade3f8cb1745bd0622073c835d9ed17b989773391c4a837ff199610c9bd4241b1a226effbc0ba1e4c9");
+  exp_out.read_long_int("0x755f7977ebfa2b81c2b86695b6f46bf17a132753a4fe0b64cbc0cb1fd02a8c3cceba4245edd19e52d56888f5851714d99e7fe4cefcc32b869413bb669681cf7a9dc26c71551941277e3e1dc15b21e1563cd2c077382a3c126c97f55d56bb396c15c9dc8ddbce571d7a0fa4f44d58609d3a313a3d260b2eec4f5e40c12d67ee9886a4411cde2c12a231c124b082bee1683885b022f323");
+  
+  modular_arithmetic::long_mod_power(x, y, mod, out);
+
+  EXPECT_TRUE(out == exp_out);
+}
+
+TEST(ModFuncTest, ModLongPowerTest){
+  long_int x, y, mod, mu, out, exp_out;
+  x.read_long_int("0x28a895cfd0200f098e2effaf19391c4a837ff199610c9bd4241b1a226effbc0ba1e4c9f81cd703a4212c02f96767adbc1e336b9d2cc5eccc98bd202bddc8fa5011f2df252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7ebf20736a58fe16964aa40fbafbcb63175b370f70823dd4212ff42bfbc778478b757e15cb8f9eb1bc33ae07f2366f07c6bade3f8cb1745bd0622073c835d9ed17b9897730a542ab333ec3f25e91a36787064d30eb8c5a396d5345f580b8104249d9d90cf6a85a2ce2e09a2ef2df9308cc0c9f57ff7727e6b0f56294dafff4c3b994");
+  y.read_long_int("0x527675936b4e6e4773d22792fc1afce65449c28d4552f30b4eefa1011e5cb7f7011c54c47098fe75dfb16d7260590aec3974723a3544e1a7723f164029a68c5cec15489c1073f782952724d5a3cc3999a4c8f68b44bc2b0a63be922d554dd1a91e765e91d76008d0ad7b2653e32f0d6ff1ae6fe9bea0b8ec48d257d5a49c57bcefb27563e5d82fd3bc29951c8fe32ec1d0744aacbfb3ef4643ca9e98b25492e843b15aeffe55b28c0e49cbf850486b0133c9c65063e3fc28b0b919cd9b921b399b9ac12f6e33d9229c950a906a98d44b3ec67ef2d2b4834421d9c1cbff614a8aeb0b765d6c3e570683adeeab5d2f4b97d239cf3ab8d8ba818dffe32404a4d6c");
+  mod.read_long_int("0xf252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7ebf20736a58fe16964aa40fbafbcb63175b370f70823dd4212ff42bfbc778478b757e15cb8f9eb1bc33ae07f2366f07c6bade3f8cb1745bd0622073c835d9ed17b989773391c4a837ff199610c9bd4241b1a226effbc0ba1e4c9");
+  exp_out.read_long_int("0xcf8e3e539c82b19ec7da11f572a2dd48896ba595050e4d66f762d956e3b2033ffcea95adad1c0fd33b3a042d7498e83406bfecd9dcf25f6960a94e44de9181029b3b622661d99aa4391e41bf6adc6bc5a39a135ee85d46bbfb5133c8b4f25ddaa95ed60fabebccd698e98cd0ea90d66fed4af808edee6e710a91962b7c7c68c427bf55b5d0f1ee14d76ac97f19b4c16e6d81e8198af");
+  
+  modular_arithmetic::long_mod_power(x, y, mod, out);
+
+  EXPECT_TRUE(out == exp_out);
 }
 
 int main(int argc, char **argv) {

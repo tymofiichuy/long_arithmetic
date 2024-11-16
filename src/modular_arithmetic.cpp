@@ -122,8 +122,17 @@ void modular_arithmetic::long_mod_square(long_int& in, long_int& modulo, long_in
     long_mod_multiply(in, in, modulo, mu, out);
 }
 
-void modular_arithmetic::long_mod_power(long_int& in, long_int& power, long_int& modulo, long_int& mu, long_int& out){
-
+void modular_arithmetic::long_mod_power(long_int in, long_int& power, long_int& modulo, long_int& out){
+    out.resize_erase(2*modulo.digit_length());
+    out.set_bit(1, 0);
+    long_int mu;
+    mu_calc(modulo, mu);
+    for(int i = 0; i < power.bit_length(); i++){
+        if(power.get_bit(i)){
+            long_mod_multiply(out, in, modulo, mu, out);
+        }
+        long_mod_square(in, modulo, mu, in);
+    }
 }
 
 // not finished!
