@@ -7,31 +7,43 @@
 using namespace std;
 //uint64_t base = 1<<64;
 
-//can be optimized by reducing tmp size to 64 bits and using flag to capture overflow
-unsigned char long_arithmetic::long_add(long_int& in1, long_int& in2, long_int& out, unsigned char carry_bit){
-    if(in1.size != in2.size || in1.size != out.size){
-        throw invalid_argument("Numbers are incompatible");
-    }
-    else{
-        uint8_t size = in1.size;
-        for(int i = 0; i < size; i++){
-            carry_bit = _addcarry_u64(carry_bit, in1[i].value, in2[i].value, &out[i].value);
+void long_arithmetic::adjust_size(long_int& in1, long_int& in2){
+    if(in1.size != in2.size){
+        if(in1.size < in2.size){
+            in1.resize(in2.size);
         }
-        return carry_bit;
+        else{
+            in2.resize(in1.size);
+        }
     }
 }
+
 //can be optimized by reducing tmp size to 64 bits and using flag to capture overflow
-unsigned char long_arithmetic::long_sub(long_int& in1, long_int& in2, long_int& out, unsigned char borrow_bit){
-    if(in1.size != in2.size || in1.size != out.size){
-        throw invalid_argument("Numbers are incompatible");
+unsigned char long_arithmetic::long_add(long_int in1, long_int in2, long_int& out, unsigned char carry_bit){
+    // if(in1.size != in2.size || in1.size != out.size){
+    //     throw invalid_argument("Numbers are incompatible");
+    // }
+    adjust_size(in1, in2);
+    out.resize_erase(in1.size);
+
+    uint8_t size = in1.size;
+    for(int i = 0; i < size; i++){
+        carry_bit = _addcarry_u64(carry_bit, in1[i].value, in2[i].value, &out[i].value);
     }
-    else{
-        uint8_t size = in1.size;
-        for(int i = 0; i < size; i++){
-            borrow_bit = _subborrow_u64(borrow_bit, in1[i].value, in2[i].value, &out[i].value);
-        }    
-        return borrow_bit;
+    return carry_bit;
+}
+//can be optimized by reducing tmp size to 64 bits and using flag to capture overflow
+unsigned char long_arithmetic::long_sub(long_int in1, long_int in2, long_int& out, unsigned char borrow_bit){
+    // if(in1.size != in2.size || in1.size != out.size){
+    //     throw invalid_argument("Numbers are incompatible");
+    // }
+    adjust_size(in1, in2);
+    out.resize_erase(in1.size);
+    uint8_t size = in1.size;
+    for(int i = 0; i < size; i++){
+        borrow_bit = _subborrow_u64(borrow_bit, in1[i].value, in2[i].value, &out[i].value);
     }
+    return borrow_bit;
 }
 
 void long_arithmetic::long_multiply_by_one_digit(long_int& long_in, digit digit_in, long_int& carry, long_int& out){
@@ -82,6 +94,7 @@ void long_int::split(long_int& out1, long_int& out2){
 }
 
 void long_arithmetic::long_half_multiply(long_int& in1, long_int& in2, long_int& out){
+    //remove later!
     if(in1.size != in2.size || in1.size != out.size){
         throw invalid_argument("Numbers are incompatible");
     }
@@ -92,7 +105,7 @@ void long_arithmetic::long_half_multiply(long_int& in1, long_int& in2, long_int&
         uint8_t size = in1.size>>1;
 
         out.reset();
-        long_int temp, carry;
+        long_int temp(0, in1.size), carry(0, in1.size);
         unsigned char sub_carry = 0;
         
         for(int i = 0; i < size; i++){
@@ -105,54 +118,63 @@ void long_arithmetic::long_half_multiply(long_int& in1, long_int& in2, long_int&
 }
 
 //void long_arithmetic::long_multiply(long_int& in1, long_int& in2, long_int& out1, long_int& out2){
-void long_arithmetic::long_multiply(long_int& in1, long_int& in2, long_int& out){
-    //modify for adaptivec size!!!
-    if(in1.size != in2.size){
-        throw invalid_argument("Numbers are incompatible");
-    }
-    else if(in1.size%2 != 0){
-        throw invalid_argument("Size should be even");
+void long_arithmetic::long_multiply(long_int in1, long_int in2, long_int& out){
+    //modify for adaptive size!!!
+    if(in1.size >= in2.size){
+        if(in1.size%2 != 0){
+            in1.resize(in1.size + 1);
+        //throw invalid_argument("Size should be even");
+        }
     }
     else{
-        uint8_t temp = in2.size>>1;
-        long_int low(0, in1.size), high(0, in1.size);
+        if(in2.size%2 != 0){
+            in2.resize(in2.size + 1);
+        //throw invalid_argument("Size should be even");
+        }  
+    }
+    adjust_size(in1, in2);
+    out.resize_erase(in1.size);
+    uint8_t temp = in2.size>>1;
+    long_int low(0, in1.size), high(0, in1.size);
 
-        long_int mid_split1, mid_split2, split1_1, split1_2, split2_1, split2_2, mid, temp1, temp2;
-        unsigned char sub_carry = 0;
-        
-        in1.split(split1_1, split1_2);
-        in2.split(split2_1, split2_2);
+    long_int mid_split1(0, in1.size), mid_split2(0, in1.size), 
+    split1_1(0, in1.size), split1_2(0, in1.size), 
+    split2_1(0, in1.size), split2_2(0, in1.size),
+    mid(0, in1.size), temp1(0, in1.size), temp2(0, in1.size);
+    unsigned char sub_carry = 0;
+    
+    in1.split(split1_1, split1_2);
+    in2.split(split2_1, split2_2);
 
-        long_half_multiply(split1_1, split2_2, temp1);
-        long_half_multiply(split1_2, split2_1, temp2);
-        sub_carry = long_add(temp1, temp2, mid);
-        mid.split(mid_split1, mid_split2);
-        if(sub_carry == 1){
-            mid_split2[temp].value = 1;
+    long_half_multiply(split1_1, split2_2, temp1);
+    long_half_multiply(split1_2, split2_1, temp2);
+    sub_carry = long_add(temp1, temp2, mid);
+    mid.split(mid_split1, mid_split2);
+    if(sub_carry == 1){
+        mid_split2[temp].value = 1;
+    }
+    sub_carry = 0;
+    mid_split1.long_upper_super_shift(temp);
+
+    long_half_multiply(split1_1, split2_1, temp1);
+    long_half_multiply(split1_2, split2_2, temp2);
+    sub_carry = long_add(temp1, mid_split1, low, sub_carry);
+    sub_carry = long_add(temp2, mid_split2, high, sub_carry);
+
+    if(high.bit_length() == 0){
+        out.resize_erase(in1.size);
+        out = move(low);
+    }
+    else{
+        out.resize_erase(2*in1.size);
+        int iter = 0;
+        while(iter < in1.size){
+            out[iter].value = low[iter].value;
+            iter++;
         }
-        sub_carry = 0;
-        mid_split1.long_upper_super_shift(temp);
-
-        long_half_multiply(split1_1, split2_1, temp1);
-        long_half_multiply(split1_2, split2_2, temp2);
-        sub_carry = long_add(temp1, mid_split1, low, sub_carry);
-        sub_carry = long_add(temp2, mid_split2, high, sub_carry);
-
-        if(high.bit_length() == 0){
-            out.resize_erase(in1.size);
-            out = move(low);
-        }
-        else{
-            out.resize_erase(2*in1.size);
-            int iter = 0;
-            while(iter < in1.size){
-                out[iter].value = low[iter].value;
-                iter++;
-            }
-            while(iter < 2*in1.size){
-                out[iter].value = high[iter-32].value;
-                iter++;
-            }
+        while(iter < 2*in1.size){
+            out[iter].value = high[iter-32].value;
+            iter++;
         }
     }
 }
@@ -177,40 +199,51 @@ int long_int::bit_length(){
     return i*64 + j;
 }
 
+int long_int::digit_length(){
+    int i = size-1;
+    uint64_t temp = this->digits[i].value;
+    while(temp == 0){
+        i--;
+        if(i == -1){
+            return 0;
+        }
+        else{
+            temp = this->digits[i].value;            
+        }
+    }
+    return i+1;
+}
+
 int long_int::get_size(){
     return size;
 }
 
-void long_arithmetic::long_divide(long_int& in1, long_int& in2, long_int& rem, long_int& quart){
-    if(in1.get_size() != in2.get_size()){
-        throw invalid_argument("Numbers are incompatible");
+void long_arithmetic::long_divide(long_int in1, long_int in2, long_int& rem, long_int& quart){
+    adjust_size(in1, in2);
+    int size = in1.size;
+
+    if(!in2.bit_length()){
+        throw invalid_argument("Divison by zero");
     }
     else{
-        int size = in1.get_size();
-
-        if(!in2.bit_length()){
-            throw invalid_argument("Divison by zero");
-        }
-        else{
-            rem.resize_erase(size);
-            quart.resize_erase(size);
-            int in_len = in2.bit_length();
-            int rem_len;
-            long_int sub_temp(0, size);
-            long_int temp(0, size);
-            rem = in1;
-            while(long_sub(rem, in2, sub_temp) == 0){
-                temp = in2;
-                rem_len = rem.bit_length();
-                temp<<(rem_len - in_len);
-                if(long_sub(rem, temp, sub_temp) == 1){
-                    rem_len--;
-                    temp>>(1);
-                }
-                long_sub(rem, temp, rem);
-                quart.set_bit(1, rem_len - in_len);
-            }        
-        }        
+        rem.resize_erase(size);
+        quart.resize_erase(size);
+        int in_len = in2.bit_length();
+        int rem_len;
+        long_int sub_temp(0, size);
+        long_int temp(0, size);
+        rem = in1;
+        while(long_sub(rem, in2, sub_temp) == 0){
+            temp = in2;
+            rem_len = rem.bit_length();
+            temp<<(rem_len - in_len);
+            if(long_sub(rem, temp, sub_temp) == 1){
+                rem_len--;
+                temp>>(1);
+            }
+            long_sub(rem, temp, rem);
+            quart.set_bit(1, rem_len - in_len);
+        }               
     }
 }
 
@@ -275,12 +308,4 @@ void long_int::print_int(){
 //         long_sub_multiply(temp, powers[index], res);
 //         in2<<4;
 //     }
-// }
-
-// void long_super_multiply(long_int& in1, long_int& in2, long_int& out, int iter){
-//     long_int split_1[2];
-//     long_int split_2[2];
-//     in1.split(split_1, iter);
-//     in2.split(split_2, iter);
-
 // }

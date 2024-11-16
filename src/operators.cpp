@@ -34,12 +34,27 @@ long_int::~long_int(){
 
 //use subtraction instead?
 bool long_int::operator==(long_int& in){
-    for(int i = 0; i < size; i++){
-        if(this->digits[i].value != in.digits[i].value){
-            return false;
-        }
+    // if(size != in.size){
+    //     return false;
+    // }
+    // int inner_size;
+    // if(size == in.size){
+
+    // }
+    // for(int i = 0; i < size; i++){
+    //     if(this->digits[i].value != in.digits[i].value){
+    //         return false;
+    //     }
+    // }
+    // return true;
+
+    long_int temp;
+    if(!long_arithmetic::long_sub(*this, in, temp) && !long_arithmetic::long_sub(in, *this, temp)){
+        return true;
     }
-    return true;
+    else{
+        return false;
+    }
 }
 
 digit& long_int::operator[](int i){
@@ -166,7 +181,6 @@ void long_int::set_bit(int value, int position){
         case 1:
             this->digits[digit].value|=1ULL<<bit;
             break;
-        
         case 0:
             this->digits[digit].value&=~(1ULL<<bit);        
             break;

@@ -52,6 +52,7 @@ public:
     void split(long_int& out1, long_int& out2);
 
     void reset();
+    int digit_length();
     int bit_length();
     int get_size();
 
@@ -66,17 +67,17 @@ public:
 
 class long_arithmetic{
 public:
+    static void adjust_size(long_int& in1, long_int& in2);
     //next functions return is a last carry/borrow bit
-    static unsigned char long_add(long_int& in1, long_int& in2, long_int& out, unsigned char carry_bit = 0);
-    //unsigned char long_add(long_int& in1, long_int& in2, unsigned char carry_bit = 0, long_int& out);
-    static unsigned char long_sub(long_int& in1, long_int& in2, long_int& out, unsigned char borrow_bit = 0);
-    //unsigned char long_sub(long_int& in1, long_int& in2, unsigned char borrow_bit = 0, long_int& out);
+    static unsigned char long_add(long_int in1, long_int in2, long_int& out, unsigned char carry_bit = 0);
+    static unsigned char long_sub(long_int in1, long_int in2, long_int& out, unsigned char borrow_bit = 0);
 
+    //needs adjustment!
     static void long_multiply_by_one_digit(long_int& long_in, digit digit_in, long_int& carry, long_int& out);
     static void long_half_multiply(long_int& in1, long_int& in2, long_int& out);
-    static void long_multiply(long_int& in1, long_int& in2, long_int& out);
+    static void long_multiply(long_int in1, long_int in2, long_int& out);
 
-    static void long_divide(long_int& in1, long_int& in2, long_int& remainder, long_int& quarter);
+    static void long_divide(long_int in1, long_int in2, long_int& remainder, long_int& quarter);
 
     //window method, 4 bit
     //static void long_power(long_int& in1, long_int& in2, long_int& out);
@@ -87,5 +88,7 @@ public:
     //calculate u/v coefficients?
     //return a bool value: 1 if numbers are coprime, 0 if not?
     static void steins_algorithm(long_int in1, long_int in2, long_int& out);
-    static void LCM(long_int& in1, long_int& in2, long_int& out);
+    static void lcm(long_int& in1, long_int& in2, long_int& out);
+    static void mu_calc(long_int& in, long_int& modulo, long_int& mu);
+    static void barrett_reduction(long_int& in, long_int& modulo, long_int& mu, long_int& rem);
 };
