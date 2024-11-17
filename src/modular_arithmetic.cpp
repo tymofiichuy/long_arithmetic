@@ -170,7 +170,6 @@ bool modular_arithmetic::miller_rabin_test(long_int& in){
 
     mu_calc(in, mu);
     for(counter; counter > 1; counter--){
-        cout << counter << "\n";
         long_mod_square(x, in, mu, x);
         if(x == temp){
             return true;

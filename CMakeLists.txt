@@ -4,6 +4,10 @@ project(long_arithmetic)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_BUILD_TYPE Release)
+
+set(CMAKE_CXX_FLAGS  "/EHsc /O2 /Ob2 /Ot /Oi /fp:fast")
+
 set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 set(TEST_DIR ${CMAKE_SOURCE_DIR}/test)
 
