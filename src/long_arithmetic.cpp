@@ -273,3 +273,38 @@ void long_int::print_int(){
     }       
     cout << "\n";
 }
+
+void long_int::random_integer(uint64_t from, long_int& to, mt19937_64& mt){
+    //add input validation!!!
+    long_int temp;
+    int to_d_len = to.digit_length();
+    //resize_erase(to_d_len);
+    uniform_int_distribution<uint64_t> i_dist_high(0, to[to_d_len-1].value);
+    uniform_int_distribution<uint64_t> i_dist_low(from, ~0ULL);
+    uniform_int_distribution<uint64_t> i_dist(0, ~0ULL);
+
+    if(to_d_len == 1){
+        reset();       
+        uniform_int_distribution<uint64_t> short_dist(from, to[to_d_len-1].value);
+
+        digits[0].value = short_dist(mt);
+    }
+    else{
+        uniform_int_distribution<uint64_t> i_dist_high(0, to[to_d_len-1].value);
+        uniform_int_distribution<uint64_t> i_dist_low(from, ~0ULL);
+        uniform_int_distribution<uint64_t> i_dist(0, ~0ULL);
+
+        while(true){
+            reset();
+            digits[to_d_len-1].value = i_dist_high(mt);
+            digits[0].value = i_dist_low(mt);            
+            for(int i = to_d_len-2; i > 0; i--){
+                digits[i].value = i_dist(mt);
+            }
+
+            if(!long_arithmetic::long_sub(to, *this, temp)){
+                break;
+            }        
+        }
+    }
+}

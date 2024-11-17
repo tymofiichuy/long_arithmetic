@@ -135,25 +135,47 @@ void modular_arithmetic::long_mod_power(long_int in, long_int& power, long_int& 
     }
 }
 
-// not finished!
-// void long_power(long_int& in1, long_int& in2, long_int& out){
-//     out.reset();
-//     long_int powers[size/2];
-//     powers[0] = long_int(1);
-//     for(int i = 1; i < size/2; i++){
-//         long_sub_multiply(powers[i-1], in1, powers[i]);
-//     }
+bool modular_arithmetic::miller_rabin_test(long_int& in){
+    if(in.even() || in.bit_length() == 0){
+        return false;
+    }
+    random_device rd;
+    mt19937_64 mt (rd());
+    int counter = 0, size = in.size;
+    long_int temp(1, size), x(0, size), pow(0, size), mu;
+    long_arithmetic::long_sub(in, temp, pow);
+    x.random_integer(1, pow, mt);
 
-//     long_int res = long_int(1);
-//     int index;
-//     long_int temp = res;
-//     for(int i = 256; i >= 0; i--){
-//         for(int j = 0; j < size/2; j++){
-//             long_sub_multiply(temp, temp, res);
-//             temp = res;
-//         }
-//         index = in2[size-1].value>>60;
-//         long_sub_multiply(temp, powers[index], res);
-//         in2<<4;
-//     }
-// }
+    //temp now is gcd(x, in)
+    steins_algorithm(x, in, temp);
+    if(temp.bit_length() != 1){
+        return false;
+    }
+    while(pow.even()){
+        pow>>1;
+        counter++;
+    }
+    if(pow.bit_length() == 0){
+        return false;
+    }
+
+    //temp now is -1 mod in
+    temp.reset();
+    long_arithmetic::long_sub(in, temp, temp, 1);
+    long_mod_power(x, pow, in, x);
+    if(x.bit_length() == 1 || x == temp){
+        return true;
+    }
+
+    mu_calc(in, mu);
+    for(counter; counter > 0; counter--){
+        long_mod_square(x, in, mu, x);
+        if(x == temp){
+            return true;
+        }
+        else if(x.bit_length() == 1){
+            return false;
+        }
+    }
+    return false;
+}

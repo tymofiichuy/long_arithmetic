@@ -544,6 +544,53 @@ TEST(ModFuncTest, ModLongPowerTest){
   EXPECT_TRUE(out == exp_out);
 }
 
+TEST(ModFuncTest, MillerRabinEvenNegativeTest){
+  long_int x;
+  x.read_long_int("0x28a895cfd0200f098e2effaf19391c4a837ff199610c9bd4241b1a226effbc0ba1e4c9f81cd703a4212c02f96767adbc1e336b9d2cc5eccc98bd202bddc8fa5011f2df252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7ebf20736a58fe16964aa40fbafbcb63175b370f70823dd4212ff42bfbc778478b757e15cb8f9eb1bc33ae07f2366f07c6bade3f8cb1745bd0622073c835d9ed17b9897730a542ab333ec3f25e91a36787064d30eb8c5a396d5345f580b8104249d9d90cf6a85a2ce2e09a2ef2df9308cc0c9f57ff7727e6b0f56294dafff4c3b994");
+  x.set_bit(0, 0);
+  
+  EXPECT_FALSE(modular_arithmetic::miller_rabin_test(x));
+}
+
+TEST(ModFuncTest, MillerRabinGeneralNegativeTest){
+  long_int x, y, mod, mu, out, exp_out;
+  x.read_long_int("0x11f2df252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7eb1");
+  y.read_long_int("0x527675936b4e6e4773d22792fc1afce65449c28d42f30b4eefa1011e5cb7f7011c54c47098fe75dfb16d7260590aec3974723a3544e1a7723f164029a68c5ce1");
+  long_arithmetic::long_multiply(x, y, x);
+
+  EXPECT_FALSE(modular_arithmetic::miller_rabin_test(x));
+}
+
+TEST(ModFuncTest, MillerRabinShortPositiveTest){
+  long_int x(13);
+
+  EXPECT_TRUE(modular_arithmetic::miller_rabin_test(x));
+}
+
+TEST(ModFuncTest, MillerRabinShortNegativeTest){
+  long_int x(15);
+
+  EXPECT_FALSE(modular_arithmetic::miller_rabin_test(x));
+}
+
+TEST(ModFuncTest, MillerRabinLongPositiveTest){
+  long_int x, temp;
+
+  x.set_bit(1, 127);
+  long_arithmetic::long_sub(x, temp, x, 1);
+
+  EXPECT_TRUE(modular_arithmetic::miller_rabin_test(x));
+}
+
+TEST(ModFuncTest, MillerRabinLongNegativeTest){
+  long_int x, temp;
+
+  x.set_bit(1, 128);
+  long_arithmetic::long_sub(x, temp, x, 1);
+
+  EXPECT_FALSE(modular_arithmetic::miller_rabin_test(x));
+}
+
 int main(int argc, char **argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

@@ -2,6 +2,7 @@
 
 #include<stdint.h>
 #include<string>
+#include<random>
 
 class digit{
 private:
@@ -66,6 +67,7 @@ public:
     void rewrite_high(long_int& in);
 
 //Constructors/Destructor
+    void random_integer(uint64_t from, long_int& to, std::mt19937_64& mt);
     long_int(uint64_t init_value = 0, uint8_t init_size = 32);
     long_int(long_int&);
     ~long_int();
@@ -77,6 +79,9 @@ public:
 class long_arithmetic{
 public:
     static void adjust_size(long_int& in1, long_int& in2);
+    // static void adjust_reduce_size(long_int& in1, long_int& in2);
+    // static void adjust_reduce_even_size(long_int& in1, long_int& in2);
+    
     //next functions return is a last carry/borrow bit
     static unsigned char long_add(long_int in1, long_int in2, long_int& out, unsigned char carry_bit = 0);
     static unsigned char long_sub(long_int in1, long_int in2, long_int& out, unsigned char borrow_bit = 0);
@@ -86,9 +91,6 @@ public:
     static void long_multiply(long_int in1, long_int in2, long_int& out);
 
     static void long_divide(long_int in1, long_int in2, long_int& remainder, long_int& quarter);
-
-    //window method, 4 bit
-    //static void long_power(long_int& in1, long_int& in2, long_int& out);
 };
 
 class modular_arithmetic{
@@ -105,4 +107,6 @@ public:
     static void long_mod_multiply(long_int& in1, long_int& in2, long_int& modulo, long_int& mu, long_int& out);
     static void long_mod_square(long_int& in, long_int& modulo, long_int& mu, long_int& out);
     static void long_mod_power(long_int in, long_int& power, long_int& modulo, long_int& out);
+
+    static bool miller_rabin_test(long_int& in);
 };
