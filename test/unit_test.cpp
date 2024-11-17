@@ -482,44 +482,6 @@ TEST(ModFuncTest, ModSquareTest){
   EXPECT_TRUE(out == exp_out);
 }
 
-TEST(ModFuncTest, Equalty1Test){
-  long_int x, y, z, mod, mu, out1, out2, out3, temp1, temp2;
-  x.read_long_int("0x28a895cfd0200f098e2effaf19391c4a837ff199610c9bd4241b1a226effbc0ba1e4c9f81cd703a4212c02f96767adbc1e336b9d2cc5eccc98bd202bddc8fa5011f2df252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7ebf20736a58fe16964aa40fbafbcb63175b370f70823dd4212ff42bfbc778478b757e15cb8f9eb1bc33ae07f2366f07c6bade3f8cb1745bd0622073c835d9ed17b9897730a542ab333ec3f25e91a36787064d30eb8c5a396d5345f580b8104249d9d90cf6a85a2ce2e09a2ef2df9308cc0c9f57ff7727e6b0f56294dafff4c3b994");
-  y.read_long_int("0x527675936b4e6e4773d22792fc1afce65449c28d4552f30b4eefa1011e5cb7f7011c54c47098fe75dfb16d7260590aec3974723a3544e1a7723f164029a68c5cec15489c1073f782952724d5a3cc3999a4c8f68b44bc2b0a63be922d554dd1a91e765e91d76008d0ad7b2653e32f0d6ff1ae6fe9bea0b8ec48d257d5a49c57bcefb27563e5d82fd3bc29951c8fe32ec1d0744aacbfb3ef4643ca9e98b25492e843b15aeffe55b28c0e49cbf850486b0133c9c65063e3fc28b0b919cd9b921b399b9ac12f6e33d9229c950a906a98d44b3ec67ef2d2b4834421d9c1cbff614a8aeb0b765d6c3e570683adeeab5d2f4b97d239cf3ab8d8ba818dffe32404a4d6c");
-  z.read_long_int("0x9e64585923d1b25d9aef59ffde0ebac3fc34403726af3ab5d561d5f833286c824e3b0a6fbc48b0176e6c5eb3f5009636f68d9811467a148422cb728826719ee2c9c550181ec71b788c56aa176ac84d1fbe1cd34e6308fede846bdfa1df5e5dea246f57cde9dab8e54f498537076ddce920f7ad74ab73e3c9d88638b1efc0cc1ab4b21e112e8a54d7d64dd50a968ccefcd4f4a42fb080");
-  mod.read_long_int("0xf252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7ebf20736a58fe16964aa40fbafbcb63175b370f70823dd4212ff42bfbc778478b757e15cb8f9eb1bc33ae07f2366f07c6bade3f8cb1745bd0622073c835d9ed17b989773391c4a837ff199610c9bd4241b1a226effbc0ba1e4c9");
-  
-  modular_arithmetic::mu_calc(mod, mu);
-  modular_arithmetic::long_mod_add(x, y, mod, mu, temp1);
-  modular_arithmetic::long_mod_multiply(temp1, z, mod, mu, out1);
-
-  modular_arithmetic::long_mod_multiply(z, temp1, mod, mu, out2);
-  
-  modular_arithmetic::long_mod_multiply(z, x, mod, mu, temp1);
-  modular_arithmetic::long_mod_multiply(z, y, mod, mu, temp2);
-  modular_arithmetic::long_mod_add(temp1, temp2, mod, mu, out3);
-
-  EXPECT_TRUE(out1 == out2 && out2 == out3);
-}
-
-TEST(ModFuncTest, Equalty2Test){
-  long_int x, y, mod, mu, out1, out2;
-  x.read_long_int("0x28a895cfd0200f098e2effaf19391c4a837ff199610c9bd4241b1a226effbc0ba1e4c9f81cd703a4212c02f96767adbc1e336b9d2cc5eccc98bd202bddc8fa5011f2df252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7ebf20736a58fe16964aa40fbafbcb63175b370f70823dd4212ff42bfbc778478b757e15cb8f9eb1bc33ae07f2366f07c6bade3f8cb1745bd0622073c835d9ed17b9897730a542ab333ec3f25e91a36787064d30eb8c5a396d5345f580b8104249d9d90cf6a85a2ce2e09a2ef2df9308cc0c9f57ff7727e6b0f56294dafff4c3b994");
-  //255
-  y.read_long_int("0xff");
-  mod.read_long_int("0xf252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7ebf20736a58fe16964aa40fbafbcb63175b370f70823dd4212ff42bfbc778478b757e15cb8f9eb1bc33ae07f2366f07c6bade3f8cb1745bd0622073c835d9ed17b989773391c4a837ff199610c9bd4241b1a226effbc0ba1e4c9");
-
-  modular_arithmetic::mu_calc(mod, mu);
-  modular_arithmetic::long_mod_multiply(x, y, mod, mu, out1);
-
-  out2 = x;
-  for(int i = 0; i < 254; i++){
-    modular_arithmetic::long_mod_add(out2, x, mod, mu, out2);
-  }
-
-  EXPECT_TRUE(out1 == out2);
-}
-
 TEST(ModFuncTest, ModShortPowerTest){
   long_int x, y, mod, mu, out, exp_out;
   x.read_long_int("0x28a895cfd0200f098e2effaf19391c4a837ff199610c9bd4241b1a226effbc0ba1e4c9f81cd703a4212c02f96767adbc1e336b9d2cc5eccc98bd202bddc8fa5011f2df252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7ebf20736a58fe16964aa40fbafbcb63175b370f70823dd4212ff42bfbc778478b757e15cb8f9eb1bc33ae07f2366f07c6bade3f8cb1745bd0622073c835d9ed17b9897730a542ab333ec3f25e91a36787064d30eb8c5a396d5345f580b8104249d9d90cf6a85a2ce2e09a2ef2df9308cc0c9f57ff7727e6b0f56294dafff4c3b994");
@@ -589,6 +551,68 @@ TEST(ModFuncTest, MillerRabinLongNegativeTest){
   long_arithmetic::long_sub(x, temp, x, 1);
 
   EXPECT_FALSE(modular_arithmetic::miller_rabin_test(x));
+}
+
+TEST(ModEqualtyTest, Equalty1Test){
+  long_int x, y, z, mod, mu, out1, out2, out3, temp1, temp2;
+  x.read_long_int("0x28a895cfd0200f098e2effaf19391c4a837ff199610c9bd4241b1a226effbc0ba1e4c9f81cd703a4212c02f96767adbc1e336b9d2cc5eccc98bd202bddc8fa5011f2df252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7ebf20736a58fe16964aa40fbafbcb63175b370f70823dd4212ff42bfbc778478b757e15cb8f9eb1bc33ae07f2366f07c6bade3f8cb1745bd0622073c835d9ed17b9897730a542ab333ec3f25e91a36787064d30eb8c5a396d5345f580b8104249d9d90cf6a85a2ce2e09a2ef2df9308cc0c9f57ff7727e6b0f56294dafff4c3b994");
+  y.read_long_int("0x527675936b4e6e4773d22792fc1afce65449c28d4552f30b4eefa1011e5cb7f7011c54c47098fe75dfb16d7260590aec3974723a3544e1a7723f164029a68c5cec15489c1073f782952724d5a3cc3999a4c8f68b44bc2b0a63be922d554dd1a91e765e91d76008d0ad7b2653e32f0d6ff1ae6fe9bea0b8ec48d257d5a49c57bcefb27563e5d82fd3bc29951c8fe32ec1d0744aacbfb3ef4643ca9e98b25492e843b15aeffe55b28c0e49cbf850486b0133c9c65063e3fc28b0b919cd9b921b399b9ac12f6e33d9229c950a906a98d44b3ec67ef2d2b4834421d9c1cbff614a8aeb0b765d6c3e570683adeeab5d2f4b97d239cf3ab8d8ba818dffe32404a4d6c");
+  z.read_long_int("0x9e64585923d1b25d9aef59ffde0ebac3fc34403726af3ab5d561d5f833286c824e3b0a6fbc48b0176e6c5eb3f5009636f68d9811467a148422cb728826719ee2c9c550181ec71b788c56aa176ac84d1fbe1cd34e6308fede846bdfa1df5e5dea246f57cde9dab8e54f498537076ddce920f7ad74ab73e3c9d88638b1efc0cc1ab4b21e112e8a54d7d64dd50a968ccefcd4f4a42fb080");
+  mod.read_long_int("0xf252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7ebf20736a58fe16964aa40fbafbcb63175b370f70823dd4212ff42bfbc778478b757e15cb8f9eb1bc33ae07f2366f07c6bade3f8cb1745bd0622073c835d9ed17b989773391c4a837ff199610c9bd4241b1a226effbc0ba1e4c9");
+  
+  modular_arithmetic::mu_calc(mod, mu);
+  modular_arithmetic::long_mod_add(x, y, mod, mu, temp1);
+  modular_arithmetic::long_mod_multiply(temp1, z, mod, mu, out1);
+
+  modular_arithmetic::long_mod_multiply(z, temp1, mod, mu, out2);
+  
+  modular_arithmetic::long_mod_multiply(z, x, mod, mu, temp1);
+  modular_arithmetic::long_mod_multiply(z, y, mod, mu, temp2);
+  modular_arithmetic::long_mod_add(temp1, temp2, mod, mu, out3);
+
+  EXPECT_TRUE(out1 == out2 && out2 == out3);
+}
+
+TEST(ModEqualtyTest, Equalty2Test){
+  long_int x, y, mod, mu, out1, out2;
+  x.read_long_int("0x28a895cfd0200f098e2effaf19391c4a837ff199610c9bd4241b1a226effbc0ba1e4c9f81cd703a4212c02f96767adbc1e336b9d2cc5eccc98bd202bddc8fa5011f2df252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7ebf20736a58fe16964aa40fbafbcb63175b370f70823dd4212ff42bfbc778478b757e15cb8f9eb1bc33ae07f2366f07c6bade3f8cb1745bd0622073c835d9ed17b9897730a542ab333ec3f25e91a36787064d30eb8c5a396d5345f580b8104249d9d90cf6a85a2ce2e09a2ef2df9308cc0c9f57ff7727e6b0f56294dafff4c3b994");
+  //255
+  y.read_long_int("0xff");
+  mod.read_long_int("0xf252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7ebf20736a58fe16964aa40fbafbcb63175b370f70823dd4212ff42bfbc778478b757e15cb8f9eb1bc33ae07f2366f07c6bade3f8cb1745bd0622073c835d9ed17b989773391c4a837ff199610c9bd4241b1a226effbc0ba1e4c9");
+
+  modular_arithmetic::mu_calc(mod, mu);
+  modular_arithmetic::long_mod_multiply(x, y, mod, mu, out1);
+
+  out2 = x;
+  for(int i = 0; i < 254; i++){
+    modular_arithmetic::long_mod_add(out2, x, mod, mu, out2);
+  }
+
+  EXPECT_TRUE(out1 == out2);
+}
+
+TEST(ModEqualtyTest, Equalty3PrimeTest){
+  long_int x, power, mod, out;
+  x.read_long_int("0x11f2df252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7eb1");
+  mod.set_bit(1, 127);
+  long_arithmetic::long_sub(mod, out, mod, 1);
+  long_arithmetic::long_sub(mod, out, power, 1);
+
+  modular_arithmetic::long_mod_power(x, power, mod, out);
+
+  EXPECT_TRUE(out.bit_length() == 1);
+}
+
+TEST(ModEqualtyTest, Equalty3PowerOf3Test){
+  long_int x, power, mod, out;
+  x.read_long_int("0x11f2df252fbb1843b3422db8f63129bad292c3b42a2402cf732500d8f0954fdc329c8a197a41fd984ca46b69caa59553ba92bacac9646d1a9c4508c3111f7eb1");
+  //3^255
+  mod.read_long_int("0x11f1b08e87ec42c5d83c3218fc83c41dcfd9f4428f4f92af1aaa80aa46162b1f71e981273601f4ad1dd4709b5aca650265a6ab");
+  power.read_long_int("0xbf675b45a9d81d93ad2cc10a857d813dfe6a2d70a350c74bc71ab1c2eb97214f69bab6f7956a31e13e2f5bce73198ac43c472");
+
+  modular_arithmetic::long_mod_power(x, power, mod, out);
+
+  EXPECT_TRUE(out.bit_length() == 1);
 }
 
 int main(int argc, char **argv) {

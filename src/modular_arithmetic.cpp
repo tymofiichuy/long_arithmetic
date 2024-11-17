@@ -6,6 +6,7 @@ void modular_arithmetic::steins_algorithm(long_int in1, long_int in2, long_int& 
     //check sizes
     //check for zero value
     long_int temp;
+    out.reset();
     out.set_bit(1, 0);
     int temp_length = in2.bit_length();
 
@@ -168,7 +169,8 @@ bool modular_arithmetic::miller_rabin_test(long_int& in){
     }
 
     mu_calc(in, mu);
-    for(counter; counter > 0; counter--){
+    for(counter; counter > 1; counter--){
+        cout << counter << "\n";
         long_mod_square(x, in, mu, x);
         if(x == temp){
             return true;
