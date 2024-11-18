@@ -63,7 +63,7 @@ void modular_arithmetic::mu_calc(long_int& modulo, long_int& mu){
     long_arithmetic::long_divide(mu, modulo, temp, mu);
 }
 
-void modular_arithmetic::barrett_reduction(long_int in, long_int& modulo, long_int& mu, long_int& rem){
+void modular_arithmetic::barrett_reduction(long_int in, long_int modulo, long_int& mu, long_int& rem){
     long_int temp;
     if(long_arithmetic::long_sub(in, modulo, temp)){
         rem = in;
@@ -77,7 +77,6 @@ void modular_arithmetic::barrett_reduction(long_int in, long_int& modulo, long_i
             barrett_reduction(temp, modulo, mu, temp);
             in.rewrite_high(temp);
         }
-
         long_int quart(in);
         quart.long_lower_super_shift(len-1);
         long_arithmetic::long_multiply(quart, mu, quart);

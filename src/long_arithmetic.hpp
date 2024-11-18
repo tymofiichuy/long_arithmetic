@@ -101,7 +101,7 @@ public:
     static void steins_algorithm(long_int in1, long_int in2, long_int& out);
     static void lcm(long_int& in1, long_int& in2, long_int& out);
     static void mu_calc(long_int& modulo, long_int& mu);
-    static void barrett_reduction(long_int in, long_int& modulo, long_int& mu, long_int& rem);
+    static void barrett_reduction(long_int in, long_int modulo, long_int& mu, long_int& rem);
 
     static void long_mod_add(long_int& in1, long_int& in2, long_int& modulo, long_int& mu, long_int& out, unsigned char carry_bit = 0);
     static void long_mod_sub(long_int& in1, long_int& in2, long_int& modulo, long_int& mu,long_int& out, unsigned char borrow_bit = 0);

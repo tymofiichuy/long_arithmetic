@@ -56,7 +56,7 @@ int main(){
             sub_mod_total += chrono::duration_cast<chrono::microseconds>(end - start);
 
             start = chrono::high_resolution_clock::now();
-            long_arithmetic::long_divide(x, y, temp, out);
+            long_arithmetic::long_divide(x, mod, temp, out);
             end = chrono::high_resolution_clock::now();
             div_total += chrono::duration_cast<chrono::microseconds>(end - start);
 
@@ -86,6 +86,11 @@ int main(){
         << lcm_total.count()/1000 << " " << square_total.count()/1000 << "\n";
 
         for(int i = 0; i < 10; i++){
+            x.random_integer(mt, j);
+            y.random_integer(mt, j);
+            mod.random_integer(mt, j);
+            modular_arithmetic::mu_calc(mod, mu);
+
             auto start = chrono::high_resolution_clock::now();
             modular_arithmetic::long_mod_power(x, y, mod, out);
             auto end = chrono::high_resolution_clock::now();
