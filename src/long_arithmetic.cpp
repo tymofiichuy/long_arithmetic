@@ -310,3 +310,12 @@ void long_int::random_integer(uint64_t from, long_int& to, mt19937_64& mt){
         }
     }
 }
+
+void long_int::random_integer(mt19937_64& mt, int digit_len){
+    uniform_int_distribution<uint64_t> i_dist(0, ~0ULL);
+
+    reset();
+    for(int i = 0; i < digit_len; i++){
+        digits[i].value = i_dist(mt);
+    }
+}

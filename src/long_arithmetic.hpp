@@ -68,6 +68,7 @@ public:
 
 //Constructors/Destructor
     void random_integer(uint64_t from, long_int& to, std::mt19937_64& mt);
+    void random_integer(std::mt19937_64& mt, int digit_len = 32);
     long_int(uint64_t init_value = 0, uint8_t init_size = 32);
     long_int(long_int&);
     ~long_int();

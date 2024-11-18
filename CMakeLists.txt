@@ -16,6 +16,9 @@ include_directories(${SOURCE_DIR})
 add_executable(demonstration ${TEST_DIR}/demonstration.cpp 
 ${SOURCE_DIR}/long_arithmetic.cpp ${SOURCE_DIR}/modular_arithmetic.cpp ${SOURCE_DIR}/operators.cpp ${SOURCE_DIR}/digit.cpp)
 
+add_executable(benchmark ${TEST_DIR}/benchmark.cpp 
+${SOURCE_DIR}/long_arithmetic.cpp ${SOURCE_DIR}/modular_arithmetic.cpp ${SOURCE_DIR}/operators.cpp ${SOURCE_DIR}/digit.cpp)
+
 ADD_SUBDIRECTORY(googletest-release-1.10.0)
 enable_testing()
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)

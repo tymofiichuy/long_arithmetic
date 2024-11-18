@@ -82,6 +82,7 @@ void modular_arithmetic::barrett_reduction(long_int in, long_int& modulo, long_i
         quart.long_lower_super_shift(len-1);
         long_arithmetic::long_multiply(quart, mu, quart);
         quart.long_lower_super_shift(len+1);
+        //quart.resize(quart.size/2);
         long_arithmetic::long_multiply(quart, modulo, quart);
         long_arithmetic::long_sub(in, quart, rem);
         while(!long_arithmetic::long_sub(rem, modulo, quart)){
